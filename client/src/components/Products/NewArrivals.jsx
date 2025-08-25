@@ -1,6 +1,12 @@
-import React from 'react'
-
+import React, { useEffect, useRef,useState } from 'react'
+import {ArrowLeft} from 'lucide-react';
 const NewArrivals = () => {
+  const scrollRef=useRef(null);
+  const [isDragging, setIsDragging]=useState(false);
+  const[startX,setStartX]=useState(0);
+  const[scrollLeft,setScrollLeft]=useState(false);
+  const[canScrollRight,setCanScrollRight]=useState(true);
+
   const NewArrivals = [
     {
       _id: "1",
@@ -79,18 +85,51 @@ const NewArrivals = () => {
         }
       ]
     }
-  ]
+  ];
+  useEffect(()=>{
+    const container=scrollRef.current;
+    if(container){
+      container.addEventListener("scroll",updateScrollButtons);
+    }
+  },[])
 
   return (
     <section>
-        <div className='container mx-auto text-center mb10 relative '>
-          <h2 className="text3xl font-bold mb-4">
-            Explore New Arrivals
-          </h2>
-          <p className="text-lg text-gray-600 mb-8">
-            Discover
-          </p>
+      <div className='container mx-auto text-center mb10 relative '>
+        <h2 className="text3xl font-bold mb-4">
+          Explore New Arrivals
+        </h2>
+        <p className="text-lg text-gray-600 mb-8">
+          Discover
+        </p>
+        <div className="absolute right-0 bottom-[-30px] flex space-x-2">
+            <button className='p-2 rounded border bg-white text-black'>
+              {/* left arrow */}
+              <ArrowLeft className='text-2xl' />
+            </button>
+            <button className='p-2 rounded border bg-white text-black'>
+              <ArrowRight className='text-2xl' />
+            </button>
         </div>
+      </div>
+      {/* Scrollable contained */}
+      <div ref={scrollRef} className='container mx-auto overflow-x-scroll flex space-x-6 relative'>
+        {NewArrivals.map((product)=>{
+          <div key={product._id} className='min-w-[100%] sm:min-w-[50%] lg:min-w-[30%] relative'>
+            <img src={product.images[0]?.url} 
+            alt={product.images[0]?.altText||product.name}
+            className='w-full h-[500px] object-cover rounded-lg' />
+            <div className='absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md
+            text-white p-4 rounded-b-lg'>
+              <Link to={`/product/${product._id}`} className="block">
+                <h4 className=' font-medium'>{product.name}</h4>
+                <p className='mt-1'>${product.price}</p>
+              </Link>
+            </div>
+          </div>
+        })}
+
+      </div>
     </section>
   )
 }
