@@ -1,6 +1,7 @@
 import React from 'react'
 import mensImage from '../../assets/MensCollection.jpg';
-import womensImage from '../../assets/WomensCollection.jpg'
+import womensImage from '../../assets/WomensCollection.jpg';
+
 import { Link } from 'react-router-dom';
 const GenderCollectionSection = () => {
     return (
