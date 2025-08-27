@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner';
+import ProductGrid from './ProductGrid';
 const selectedProduct = {
     name: "Stylish Jacket",
     price: 120,
@@ -21,6 +22,45 @@ const selectedProduct = {
 
     ]
 }
+
+const similarProducts = [
+    {
+        _id:1,
+        name:"Product 1",
+        price:100,
+        images:[{
+            url: "https://picsum.photos/500/500?random=3",
+            altText: "Product 1"
+        }]
+    },
+    {
+        _id:2,
+        name:"Product 2",
+        price:120,
+        images:[{
+            url: "https://picsum.photos/500/500?random=4",
+            altText: "Product 2"
+        }]
+    },
+    {
+        _id:3,
+        name:"Product 3",
+        price:140,
+        images:[{
+            url: "https://picsum.photos/500/500?random=5",
+            altText: "Product 3"
+        }]
+    },
+    {
+        _id:4,
+        name:"Product 4",
+        price:160,
+        images:[{
+            url: "https://picsum.photos/500/500?random=6",
+            altText: "Product 4"
+        }]
+    }
+]
 const ProductDetails = () => {
     const [mainImage,setMainImage]=useState(""); 
     const [selectedSize,setSelectedSize]=useState("");
@@ -70,9 +110,15 @@ const ProductDetails = () => {
                     </div>
                     <div className='md:w-1/2'>
                         <div className="mb-4">
-                            <img src={mainImage} alt="Main Product"
-                                className='w-full h-auto object-cover rounded-lg'
-                            />
+                            {mainImage ? (
+                                <img src={mainImage} alt="Main Product"
+                                    className='w-full h-auto object-cover rounded-lg'
+                                />
+                            ) : (
+                                <div className='w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center'>
+                                    <span className='text-gray-500'>No image available</span>
+                                </div>
+                            )}
                         </div>
                         <div className='md:hidden flex overscroll-x-auto space-x-4 mb-4'>
                             {selectedProduct.images.map((image, index) => (
@@ -143,8 +189,10 @@ const ProductDetails = () => {
                                  </button>
                              </div>
                         </div>
-                        <button onClick={handleAddToCart} className='bg-black text-white py-2 px-6 rounded w-full mb-4'>
-                         ADD TO CART
+                        <button onClick={handleAddToCart} 
+                        disabled={isButtonDisabled}
+                        className={`bg-black text-white py-2 px-6 rounded w-full mb-4 ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                         {isButtonDisabled ? 'Adding to Cart...' : 'Add to Cart'}
                         </button>
 
                         <div className='mt-10 text-gray-700'>
@@ -171,6 +219,14 @@ const ProductDetails = () => {
                         </div>
 
                     </div>
+                </div>
+
+                {/* For recommendation */}
+                <div className='mt-20'>
+                  <h2 className='text-2xl text-center font-medium mb-4'>
+                    You might also like
+                  </h2>
+                  <ProductGrid products={similarProducts} />
                 </div>
             </div>
         </div>
