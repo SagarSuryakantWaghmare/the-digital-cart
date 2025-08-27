@@ -134,7 +134,7 @@ const NewArrivals = () => {
   const scroll = (direction) => {
     const scrollAmount = direction === "left" ? -300 : 300;
     scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    setTimeout(updateScrollButtons, 350); // allow smooth scroll to finish
+    setTimeout(updateScrollButtons, 350); 
   }
 
   return (
