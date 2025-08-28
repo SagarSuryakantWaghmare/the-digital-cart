@@ -6,6 +6,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import { Toaster } from 'sonner'
+import Profile from './pages/Profile'
 const App = () => {
   return (
     <BrowserRouter>
@@ -13,8 +14,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<UserLayout />} >
         <Route index element={<Home/>}/>
-        <Route path='Login' element={<Login/>}/>
+        <Route path='login' element={<Login/>}/>
         <Route path='register' element={<Register/>}/>
+        <Route path='profile' element={<Profile/>}/>
         </Route>
         <Route path="/admin" element={<AdminLayout />} />
       </Routes>
