@@ -4,7 +4,7 @@ const MyOrdersPage = () => {
   const [orders, setOrders] = React.useState([]);
   useEffect(() => {
     setTimeout(() => {
-      const mockOrders = [
+      const orders = [
         {
           _id: "12345",
           createdAt: new Date(),
@@ -14,7 +14,9 @@ const MyOrdersPage = () => {
               name: "Product 1",
               image: "https://picsum.photos/500/500?random=1",
             }
-          ]
+          ],
+          totalPrice: "1200",
+          isPaid: true
         },
         {
           _id: "3456",
@@ -26,12 +28,14 @@ const MyOrdersPage = () => {
               image: "https://picsum.photos/500/500?random=2",
             }
           ],
-          totalPrice:"1200"
+          totalPrice: "1200",
+          isPaid: true
         },
 
       ]
+      setOrders(orders);
     }, 1000);
-  }, [])
+  }, []);
 
   return (
     <div className='max-w-7xl mx-auto p-4 sm:p-6'>
@@ -61,25 +65,33 @@ const MyOrdersPage = () => {
                     />
                   </td>
                   <td className='py-2 px-2 sm:py-4 sm:px-4 font-medium text-gray-900 whitespace-nowrap'>
-                  #{order._id}
+                    #{order._id}
                   </td>
                   <td className='py-2 px-2 sm:py-4 sm:px-4'>
-                   {new Date(order.createdAt).toLocaleDateString()}{" "}
-                   {new Date(order.createdAt).toLocaleDateString()}
+                    {new Date(order.createdAt).toLocaleDateString()}{" "}
+                    {new Date(order.createdAt).toLocaleDateString()}
                   </td>
                   <td className='py-2 px-2 sm:py-4 sm:px-4'>
-                    {order.shippingAddress?`${order.shippingAddress.city},${order.shippingAddress.country}`:
-                    `N/A`}
+                    {order.shippingAddress ? `${order.shippingAddress.city},${order.shippingAddress.country}` :
+                      `N/A`}
                   </td>
                   <td className='py-2 px-2 sm:py-4 sm:px-4'>
-                        ${order.totalPrice}
+                    ${order.orderItems.length}
                   </td>
                   <td className='py-2 px-2 sm:py-4 sm:px-4'>
-                   <span className={`${order.is}`}></span>
+                    ${order.totalPrice}
+                  </td>
+                  <td className='py-2 px-2 sm:py-4 sm:px-4'>
+                    <span className={`${order.isPaid ?
+                      "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                      } px-2 py-1 rounded-full text-xs font-medium sm:text-sm`}>
+                        {order.isPaid ? "Paid" : "Pending"}
+                      </span>
                   </td>
                 </tr>
               ))
-            ):(
+            ) : (
               <tr>
                 <td colSpan={7} className='py-4 px-4 text-center text-gray-500'>
                   You have no orders;

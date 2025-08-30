@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import login from '../../assets/DifferentClothes.jpg';
+import login from '../assets/BeachLook.jpg';
 const Register = () => {
     const [name,setName]=useState("");
     const [email,setEmail]=useState("");

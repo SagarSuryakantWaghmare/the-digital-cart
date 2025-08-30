@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import login from '../../assets/DifferentClothes.jpg';
+import login from '../assets/BeachLook.jpg';
 const Login = () => {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
