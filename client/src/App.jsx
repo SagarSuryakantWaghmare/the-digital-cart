@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import { Toaster } from 'sonner'
 import Profile from './pages/Profile'
+import CollectionPage from './pages/CollectionPage'
 const App = () => {
   return (
     <BrowserRouter>
@@ -17,6 +18,7 @@ const App = () => {
         <Route path='login' element={<Login/>}/>
         <Route path='register' element={<Register/>}/>
         <Route path='profile' element={<Profile/>}/>
+        <Route path='collection' element={<CollectionPage/>}/>
         </Route>
         <Route path="/admin" element={<AdminLayout />} />
       </Routes>
