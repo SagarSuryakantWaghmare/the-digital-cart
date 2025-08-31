@@ -2,8 +2,13 @@ import { X } from 'lucide-react';
 import React from 'react';
 import CardContainer from '../Cart/CartContainer';
 import CartContainer from '../Cart/CartContainer';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = ({ toggleCart, cartOpen }) => {
+  const navigate=useNavigate();
+  const handleCheckout=()=>{
+   navigate('/checkout');
+  }
   return (
     <div
       className={`fixed top-0 right-0 w-3/4 sm:w-1/2 md:w-1/4 h-full bg-white shadow-lg
@@ -30,6 +35,7 @@ const Cart = ({ toggleCart, cartOpen }) => {
         {/* Sticky checkout button */}
         <div className="sticky bottom-0 bg-white p-4 border-t">
           <button
+          onClick={handleCheckout}
             className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
           >
             Checkout

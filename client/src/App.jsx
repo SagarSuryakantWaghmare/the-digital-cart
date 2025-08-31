@@ -8,6 +8,7 @@ import Register from './pages/Register'
 import { Toaster } from 'sonner'
 import Profile from './pages/Profile'
 import CollectionPage from './pages/CollectionPage'
+import Checkout from './components/Cart/Checkout'
 const App = () => {
   return (
     <BrowserRouter>
@@ -18,7 +19,9 @@ const App = () => {
         <Route path='login' element={<Login/>}/>
         <Route path='register' element={<Register/>}/>
         <Route path='profile' element={<Profile/>}/>
-        <Route path='collection' element={<CollectionPage/>}/>
+        <Route path='collection/:collection' element={<CollectionPage/>}/>
+        <Route path='product/:id' element={<ProductPage/>}/>
+        <Route path='checkout' element={<Checkout/>}/>
         </Route>
         <Route path="/admin" element={<AdminLayout />} />
       </Routes>
