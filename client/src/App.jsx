@@ -13,25 +13,34 @@ import ProductDetails from './components/Products/ProductDetails'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
 import OrderDetailsPage from './pages/OrderDetailsPage'
 import MyOrdersPage from './components/Products/MyOrdersPage'
-// import ProductPage from './components/Products/'
+import AdminHomePage from './pages/AdminHomePage'
+import UserManagement from './components/Admin/UserManagement'
+import ProductMangement from './components/Admin/ProductMangement'
+import EditProductPage from './components/Admin/EditProductPage'
+
 const App = () => {
   return (
     <BrowserRouter>
-    <Toaster position='top-right' />
+      <Toaster position='top-right' />
       <Routes>
         <Route path="/" element={<UserLayout />} >
-        <Route index element={<Home/>}/>
-        <Route path='login' element={<Login/>}/>
-        <Route path='register' element={<Register/>}/>
-        <Route path='profile' element={<Profile/>}/>
-        <Route path='collection/:collection' element={<CollectionPage/>}/>
-        <Route path='product/:id' element={<ProductDetails/>}/>
-        <Route path='checkout' element={<Checkout/>}/>
-        <Route path='order-confirmation' element={<OrderConfirmationPage/>}/>
-        <Route path='order/:id' element={<OrderDetailsPage/>}/>
-        <Route path='my-orders' element={<MyOrdersPage/>}/>
+          <Route index element={<Home />} />
+          <Route path='login' element={<Login />} />
+          <Route path='register' element={<Register />} />
+          <Route path='profile' element={<Profile />} />
+          <Route path='collection/:collection' element={<CollectionPage />} />
+          <Route path='product/:id' element={<ProductDetails />} />
+          <Route path='checkout' element={<Checkout />} />
+          <Route path='order-confirmation' element={<OrderConfirmationPage />} />
+          <Route path='order/:id' element={<OrderDetailsPage />} />
+          <Route path='my-orders' element={<MyOrdersPage />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />} />
+        <Route index element={<AdminHomePage />} />
+        <Route path='users' element={<UserManagement />} />
+        <Route path='products' element={<ProductMangement />} />
+        <Route path='products/:id/edit' element={<EditProductPage/>}/>
+        <Route />
       </Routes>
     </BrowserRouter>
   )
