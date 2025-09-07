@@ -1,7 +1,7 @@
 import express from 'express';
 import User from "../models/User.js";
 import jwt from 'jsonwebtoken';
-
+import protect from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 // Router
@@ -73,6 +73,13 @@ router.post("/login",async(req,res)=>{
         console.error(error);
         res.status(500).send("Server Error");
     }
+})
+
+// User routes profile
+// Get the user info when logged in the website
+// Access is private for this api
+router.get("/profile",protect,async(req,res)=>{
+    res.json(req.user);
 })
 
 export default router;
