@@ -42,6 +42,11 @@ router.post("/register", async (req, res) => {
 router.post("/login",async(req,res)=>{
     const{email,password}=req.body;
 
+    // Validate input
+    if (!email || !password) {
+        return res.status(400).json({message:"Email and password are required"});
+    }
+
     try {
         // Find the user by the email in the mongodb
         let user=await User.findOne({email});
@@ -74,7 +79,6 @@ router.post("/login",async(req,res)=>{
         res.status(500).send("Server Error");
     }
 })
-
 // User routes profile
 // Get the user info when logged in the website
 // Access is private for this api
