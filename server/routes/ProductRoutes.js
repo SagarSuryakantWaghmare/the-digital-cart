@@ -157,8 +157,8 @@ router.get('/', async (req, res) => {
 
         if (minPrice || maxPrice) {
             query.price = {};
-            if (minPrice) query.price.get = Number(minPrice);
-            if (maxPrice) query.price.get = Number(maxPrice);
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
         }
 
         if (search) {
@@ -173,6 +173,7 @@ router.get('/', async (req, res) => {
         }
 
         // Sort logic
+        let sort;
         if (sortBy) {
             switch (sortBy) {
                 case "priceAsc":
@@ -190,9 +191,9 @@ router.get('/', async (req, res) => {
         }
 
         // Fetch teh products and apply sorting and limit
-        let products=await Product.find(query)
-        .sort(sort)
-        .limit(Number(limit)||0);
+        let products = await Product.find(query)
+            .sort(sort)
+            .limit(Number(limit) || 0);
         res.json(products);
     } catch (error) {
         console.error(error);
@@ -200,6 +201,92 @@ router.get('/', async (req, res) => {
 
     }
 })
+
+// Router get /api/products/new-arrivals
+// Retrive latest 8 products -creation date
+// Access public
+router.get("/new-arrivals", async (req, res) => {
+    try {
+        const newArrivals = await Product.find().sort({ createdAt: -1 }).limit(8);
+        res.json(newArrivals);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+})
+
+// Route Getting the /api/products/best-seller
+//Retrieve teh product with highest rating
+// Public access
+
+router.get("/best-seller", async (req, res) => {
+    try {
+        const bestSeller = await Product.findOne().sort({ rating: -1 });
+        if (bestSeller) {
+            res.json(bestSeller);
+        }
+        else {
+            res.status(404).json({ message: "No best seller found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+})
+
+// route GET /api/products/similar/:id
+// Getting the similar products based on the current products' gender and category
+// public access
+router.get("/similar/:id", async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        const similarProducts = await Product.find({
+            _id: { $ne: id }, //Exclude the current product id
+            gender: product.gender,
+            category: product.category,
+        }).limit(4);
+
+        res.json(similarProducts);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+
+    }
+
+
+});
+
+// Route get single product /api/products/:id
+//Get a single product by id
+// public for getting the id
+
+router.get("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Validate ObjectId format
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: "Invalid product ID format" });
+        }
+        
+        const product = await Product.findById(id);
+        if (product) {
+            res.json(product);
+        }
+        else {
+            res.status(404).json({ message: "Product not found" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+    }
+})
+
 
 
 export default router;
