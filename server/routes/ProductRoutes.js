@@ -38,7 +38,7 @@ router.post("/", protect, admin, async (req, res) => {
 router.put("/:id", protect, admin, async (req, res) => {
     try {
         const { id } = req.params;
-        
+
         // Validate ObjectId
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).json({ message: "Invalid product ID" });
@@ -79,11 +79,11 @@ router.put("/:id", protect, admin, async (req, res) => {
                 product.user = req.user._id; // Use current admin as fallback
             }
             // Save the uploaded product
-            const updatedProduct=await product.save();
+            const updatedProduct = await product.save();
             res.json(updatedProduct);
         }
-        else{
-            res.status(404).json({message:"Product not found"});
+        else {
+            res.status(404).json({ message: "Product not found" });
         }
     } catch (error) {
         console.log(error);
@@ -95,21 +95,111 @@ router.put("/:id", protect, admin, async (req, res) => {
 // Detete the user with using id
 // Router for using the id
 // Private the adming
-router.delete("/:id",protect,admin,async(req,res)=>{
+router.delete("/:id", protect, admin, async (req, res) => {
     try {
-        const product=await Product.findById(req.params.id);
-        if(product){
+        const product = await Product.findById(req.params.id);
+        if (product) {
             // await it and delete form the user
             await product.deleteOne();
-            res.json({message:"Product deleted"});
+            res.json({ message: "Product deleted" });
         }
-        else{
-            res.status(404).json({message:"Product not found"});
+        else {
+            res.status(404).json({ message: "Product not found" });
         }
     } catch (error) {
         console.error(error);
         res.status(500).send("Server error while deleting the product");
     }
 })
+
+// Route to get /api/products
+// Get all products with optimal query filters
+// @access public
+router.get('/', async (req, res) => {
+    try {
+        const { collection, size, color, gender, minPrice, maxPrice,
+            sortBy, search, category, material, brand, limit
+        } = req.query;
+
+        let query = {};
+        // Filter the logic for the getting the clothes
+        if (collection && collection.toLocaleLowerCase() !== 'all') {
+            query.collection = collection;
+        }
+
+        if (category && category.toLocaleLowerCase() !== 'all') {
+            query.category = category;
+        }
+
+        if (material) {
+            query.material = {
+                $in: material.split(",")
+            };
+        }
+        if (brand) {
+            query.brand = {
+                $in: brand.split(",")
+            }
+        }
+
+        if (size) {
+            query.sizes = {
+                $in: size.split(",")
+            }
+        }
+
+        if (color) {
+            query.colors = { $in: [color] };
+        }
+        if (gender) {
+            query.gender = gender;
+        }
+
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.get = Number(minPrice);
+            if (maxPrice) query.price.get = Number(maxPrice);
+        }
+
+        if (search) {
+            query.$or = [
+                {
+                    name: { $regex: search, $options: "i" },
+                },
+                {
+                    description: { $regex: search, $options: "i" }
+                }
+            ];
+        }
+
+        // Sort logic
+        if (sortBy) {
+            switch (sortBy) {
+                case "priceAsc":
+                    sort = { price: 1 };
+                    break;
+                case "priceDesc":
+                    sort = { price: -1 };
+                    break;
+                case "popularity":
+                    sort = { rating: -1 };
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Fetch teh products and apply sorting and limit
+        let products=await Product.find(query)
+        .sort(sort)
+        .limit(Number(limit)||0);
+        res.json(products);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Server Error");
+
+    }
+})
+
 
 export default router;

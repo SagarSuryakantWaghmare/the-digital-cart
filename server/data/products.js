@@ -240,3 +240,6 @@ const products = [
     tags: ["performance", "stretch", "travel", "shirt", "men"]
   }
 ];
+
+
+export default products;
