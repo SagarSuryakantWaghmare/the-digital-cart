@@ -5,7 +5,7 @@ import cors from "cors";
 import connectDB from './db/index.js';
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/ProductRoutes.js";
-import cartRoutes from './routes/cartRoutes.js';
+import checkoutRoutes from './routes/cartRoutes.js';
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -22,6 +22,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/products",productRoutes);
 app.use("/api/cart",cartRoutes);
+app.use("/api/checkout",checkoutRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is runnning on the http://localhost:${PORT}`);
