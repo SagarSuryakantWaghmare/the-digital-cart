@@ -241,7 +241,8 @@ router.post("/merge", protect, async (req, res) => {
     } catch (error) {
 
         // Logging errors
-        console.error(500).json()
+        console.error(500);
+        res.status(500).json({message:"Server Error"});
     }
 })
 
