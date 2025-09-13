@@ -1,9 +1,9 @@
 import express from 'express';
-import Checkout from '../models/Checkout';
-import Cart from '../models/Cart';
-import Product from '../models/Product';
-import Order from '../models/Order';
-import protect from '../middleware/authMiddleware';
+import Checkout from '../models/Checkout.js';
+import Cart from '../models/Cart.js';
+import Product from '../models/Product.js';
+import Order from '../models/Order.js';
+import protect from '../middleware/authMiddleware.js';
 
 const router=express.Router();
 // @route post /api/checkout

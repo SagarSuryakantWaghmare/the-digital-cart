@@ -2,7 +2,6 @@ import express from 'express';
 import Cart from '../models/Cart.js';
 import Product from '../models/Product.js';
 import protect from '../middleware/authMiddleware.js';
-import { useId } from 'react';
 
 const router = express.Router();
 
