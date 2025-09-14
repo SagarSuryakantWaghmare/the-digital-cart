@@ -18,6 +18,11 @@ const checkoutItemSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    quantity: {
+        type: Number,
+        required: true,
+        min: 1,
+    },
 }, {
     _id: false
 }
@@ -65,6 +70,7 @@ const checkoutSchema = new mongoose.Schema({
     finalizedAt:{
         type:Date,
     },
+
 },
 {timestamps:true}
 )
