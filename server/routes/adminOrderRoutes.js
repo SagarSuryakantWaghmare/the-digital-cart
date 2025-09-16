@@ -40,4 +40,23 @@ router.put("/:id",protect,admin,async(req,res)=>{
     }
 })
 
+// Route delete /api/admin/orders/:id
+// Delete an order
+// Private admin only
+router.delete("/:id",protect,admin,async(req,res)=>{
+    try {
+        const order=await Order.findById(req.params.id);
+        if(order){
+            await order.deleteOne();
+            res.json({message:"order removed"});
+        }
+        else{
+            res.status(404).json({message:"Order not found"});
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message:"Server Error"});
+    }
+})
+
 export default router;
