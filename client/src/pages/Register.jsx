@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import login from '../assets/BeachLook.jpg';
+import { Link } from 'react-router-dom';
+import { registerUser } from '../redux/slice/authSlice';
+import { useDispatch } from 'react-redux';
 const Register = () => {
     const [name,setName]=useState("");
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
+    const dispatch = useDispatch();
 
     const handleSubmit=(e)=>{
         e.preventDefault();
         console.log({name,email,password});
+        dispatch(registerUser({name,email,password}));
     }
 
   return (
