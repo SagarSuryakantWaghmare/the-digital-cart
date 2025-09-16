@@ -13,7 +13,6 @@ import subscriberRoutes from './routes/subscriberRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import productAdminRoutes from './routes/productAdminRoutes.js';
 import adminOrderRoutes from './routes/adminOrderRoutes.js';
-import productAdminRoutes from './routes/productAdminRoutes.js';
 const app = express();
 app.use(express.json());
 app.use(cors());

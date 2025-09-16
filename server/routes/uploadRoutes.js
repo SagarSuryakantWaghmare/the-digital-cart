@@ -1,10 +1,14 @@
 import express from 'express';
 import multer from 'multer';
-import cloudinary, { v2 } from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
-import 'dotenv';
+import dotenv from 'dotenv';
 const router = express.Router();
 dotenv.config();
+
+//cloudinary configurationpress from 'express';
+
+
 
 //cloudinary configuration
 cloudinary.config({
@@ -25,9 +29,9 @@ router.post("/", upload.single("image"), async (req, res) => {
         }
 
         // upload to cloudinary
-        const streamUpload = (flieBuffer) => {
+        const streamUpload = (fileBuffer) => {
             return new Promise((resolve, reject) => {
-                const stream = cloudinary.upload.upload_stream((error, result) => {
+                const stream = cloudinary.uploader.upload_stream((error, result) => {
                     if (result) {
                         resolve(result);
                     }
@@ -36,8 +40,8 @@ router.post("/", upload.single("image"), async (req, res) => {
                     }
                 });
 
-                // Use stramifier to convert file buffer to a stream
-                streamifier.createReadStream(flieBuffer).pipe(stream);
+                // Use streamifier to convert file buffer to a stream
+                streamifier.createReadStream(fileBuffer).pipe(stream);
             })
         };
 

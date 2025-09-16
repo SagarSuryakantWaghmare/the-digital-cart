@@ -1,6 +1,6 @@
 import express from 'express';
 const router =express.Router();
-import Subscriber from '../models/Subscriber';
+import Subscriber from '../models/Subscriber.js';
 
 // post /api/subscribe
 //Handle newsletter subscription
