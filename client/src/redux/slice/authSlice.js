@@ -24,7 +24,12 @@ const initialState = {
 export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { rejectWithValue }) => {
     try {
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
-            userData
+            userData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
         );
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
         localStorage.setItem("userToken", response.data.token);
@@ -38,7 +43,12 @@ export const loginUser = createAsyncThunk("auth/loginUser", async (userData, { r
 export const registerUser = createAsyncThunk("auth/registerUser", async (userData, { rejectWithValue }) => {
     try {
         const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users/register`,
-            userData
+            userData,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
         );
         localStorage.setItem("userInfo", JSON.stringify(response.data.user));
         localStorage.setItem("userToken", response.data.token);
