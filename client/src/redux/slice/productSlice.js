@@ -111,43 +111,41 @@ const productsSlice = createSlice({
             state.loading=true;
             state.error=null;
         })
-        .addCase(fetchProductsByFilters.fulfilled,(state)=>{
+        .addCase(fetchProductsByFilters.fulfilled,(state,action)=>{
             state.loading=false;
-            state.products=Array.isArray(action.payload)?action.payload:[],
+            state.products=Array.isArray(action.payload)?action.payload:[]
         })
         .addCase(fetchProductsByFilters.rejected,(state,action)=>{
             state.loading=false;
-            state.error-action.error.message;
+            state.error=action.error.message;
         })
         .addCase(fetchProductDetails.pending,(state)=>{
             state.loading=true;
             state.error=null;
         })
-        .addCase(fetchProductDetails.fulfilled,(state)=>{
+        .addCase(fetchProductDetails.fulfilled,(state,action)=>{
             state.loading=false;
             state.selectedProduct=action.payload;
         })
         .addCase(fetchProductDetails.rejected,(state,action)=>{
             state.loading=false;
-            state.error-action.error.message;
+            state.error=action.error.message;
         })
-        .addCase(updateProduct.pending,(state)=>{
+        .addCase(fetchSimilarProducts.pending,(state)=>{
             state.loading=true;
             state.error=null;
         })
-        .addCase(updateProduct.fulfilled,(state)=>{
+        .addCase(fetchSimilarProducts.fulfilled,(state,action)=>{
             state.loading=false;
-            const updatedProduct=action.payload;
-            const index=state.products.findIndex(
-                (product)=>product._id===updateProduct._id
-            );
-            if(index!==-1){
-                state.products[index]=updateProduct;
-            }
+            state.products=action.payload;
         })
-        .addCase(updateProduct.rejected,(state,action)=>{
+        .addCase(fetchSimilarProducts.rejected,(state,action)=>{
             state.loading=false;
-            state.error-action.error.message;
+            state.error=action.error.message;
         })
     }
-})
+});
+
+
+export const {setFilters,clearFilters}=productsSlice.actions;
+export default productsSlice.reducer;
