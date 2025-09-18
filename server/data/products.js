@@ -238,6 +238,126 @@ const products = [
     isFeatured: true,
     isPublished: true,
     tags: ["performance", "stretch", "travel", "shirt", "men"]
+  },
+  {
+    name: "Floral Print Blouse",
+    description: "Elegant floral print blouse perfect for office and casual wear. Features a relaxed fit and comfortable fabric.",
+    price: 1699,
+    discountPrice: 1299,
+    countInStock: 25,
+    sku: "FL-BL-001",
+    category: "Top Wear",
+    brand: "Urban Threads",
+    sizes: ["XS", "S", "M", "L", "XL"],
+    colors: ["Pink", "Blue", "White"],
+    collections: "Office Casual",
+    material: "Polyester",
+    gender: "Women",
+    images: [
+      { url: "https://picsum.photos/500/500?random=101", altText: "Floral Print Blouse Front" },
+      { url: "https://picsum.photos/500/500?random=102", altText: "Floral Print Blouse Back" }
+    ],
+    rating: 4.4,
+    numReviews: 18,
+    isFeatured: true,
+    isPublished: true,
+    tags: ["blouse", "floral", "office", "women"]
+  },
+  {
+    name: "High-Waisted Skinny Jeans",
+    description: "Comfortable high-waisted skinny jeans with stretch fabric for a perfect fit.",
+    price: 2499,
+    discountPrice: 1999,
+    countInStock: 30,
+    sku: "HW-JN-002",
+    category: "Bottom Wear",
+    brand: "Urban Threads",
+    sizes: ["XS", "S", "M", "L", "XL"],
+    colors: ["Blue", "Black", "Grey"],
+    collections: "Denim Collection",
+    material: "Denim",
+    gender: "Women",
+    images: [
+      { url: "https://picsum.photos/500/500?random=103", altText: "High-Waisted Skinny Jeans Front" },
+      { url: "https://picsum.photos/500/500?random=104", altText: "High-Waisted Skinny Jeans Side" }
+    ],
+    rating: 4.6,
+    numReviews: 24,
+    isFeatured: true,
+    isPublished: true,
+    tags: ["jeans", "skinny", "high-waisted", "women"]
+  },
+  {
+    name: "Silk Camisole Top",
+    description: "Luxurious silk camisole top with delicate lace trim. Perfect for layering or wearing alone.",
+    price: 1899,
+    discountPrice: 1499,
+    countInStock: 20,
+    sku: "SL-CM-003",
+    category: "Top Wear",
+    brand: "Urban Threads",
+    sizes: ["XS", "S", "M", "L"],
+    colors: ["Black", "White", "Navy"],
+    collections: "Evening Wear",
+    material: "Silk",
+    gender: "Women",
+    images: [
+      { url: "https://picsum.photos/500/500?random=105", altText: "Silk Camisole Top Front" },
+      { url: "https://picsum.photos/500/500?random=106", altText: "Silk Camisole Top Detail" }
+    ],
+    rating: 4.7,
+    numReviews: 15,
+    isFeatured: true,
+    isPublished: true,
+    tags: ["camisole", "silk", "evening", "women"]
+  },
+  {
+    name: "Wide Leg Trousers",
+    description: "Elegant wide leg trousers in a comfortable fabric blend. Perfect for professional settings.",
+    price: 2199,
+    discountPrice: 1799,
+    countInStock: 18,
+    sku: "WL-TR-004",
+    category: "Bottom Wear",
+    brand: "Urban Threads",
+    sizes: ["S", "M", "L", "XL"],
+    colors: ["Black", "Navy", "Grey"],
+    collections: "Professional",
+    material: "Polyester Cotton",
+    gender: "Women",
+    images: [
+      { url: "https://picsum.photos/500/500?random=107", altText: "Wide Leg Trousers Front" },
+      { url: "https://picsum.photos/500/500?random=108", altText: "Wide Leg Trousers Side" }
+    ],
+    rating: 4.3,
+    numReviews: 12,
+    isFeatured: false,
+    isPublished: true,
+    tags: ["trousers", "wide-leg", "professional", "women"]
+  },
+  {
+    name: "Cotton Sundress",
+    description: "Light and airy cotton sundress with a flowy silhouette. Perfect for summer days.",
+    price: 1799,
+    discountPrice: 1399,
+    countInStock: 22,
+    sku: "CT-SD-005",
+    category: "Dresses",
+    brand: "Urban Threads",
+    sizes: ["XS", "S", "M", "L", "XL"],
+    colors: ["Yellow", "Pink", "Blue"],
+    collections: "Summer Collection",
+    material: "Cotton",
+    gender: "Women",
+    images: [
+      { url: "https://picsum.photos/500/500?random=109", altText: "Cotton Sundress Front" },
+      { url: "https://picsum.photos/500/500?random=110", altText: "Cotton Sundress Back" }
+    ],
+    rating: 4.5,
+    numReviews: 20,
+    isFeatured: true,
+    isPublished: true,
+    tags: ["dress", "sundress", "summer", "women"]
   }
 ];
 

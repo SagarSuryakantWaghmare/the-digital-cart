@@ -33,20 +33,20 @@ const App = () => {
             <Route path='login' element={<Login />} />
             <Route path='register' element={<Register />} />
             <Route path='profile' element={<Profile />} />
-            <Route path='collection/:collection' element={<CollectionPage />} />
+            <Route path='collections/:collection' element={<CollectionPage />} />
             <Route path='product/:id' element={<ProductDetails />} />
             <Route path='checkout' element={<Checkout />} />
             <Route path='order-confirmation' element={<OrderConfirmationPage />} />
             <Route path='order/:id' element={<OrderDetailsPage />} />
             <Route path='my-orders' element={<MyOrdersPage />} />
           </Route>
-          <Route path="/admin" element={<AdminLayout />} />
-          <Route index element={<AdminHomePage />} />
-          <Route path='users' element={<UserManagement />} />
-          <Route path='products' element={<ProductMangement />} />
-          <Route path='products/:id/edit' element={<EditProductPage />} />
-          <Route path='orders ' element={<OrderMangement />} />
-          <Route />
+          <Route path="/admin" element={<AdminLayout />} >
+            <Route index element={<AdminHomePage />} />
+            <Route path='users' element={<UserManagement />} />
+            <Route path='products' element={<ProductMangement />} />
+            <Route path='products/:id/edit' element={<EditProductPage />} />
+            <Route path='orders' element={<OrderMangement />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </Provider>

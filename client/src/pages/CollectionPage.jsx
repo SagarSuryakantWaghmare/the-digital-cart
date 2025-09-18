@@ -3,11 +3,22 @@ import { FaFilter } from 'react-icons/fa';
 import FilterSidebar from '../components/Products/FilterSidebar';
 import SortOptions from '../components/Products/SortOptions';
 import ProductGrid from '../components/Products/ProductGrid';
+import { useSearchParams, useParams } from 'react-router-dom';
+import {useDispatch,useSelector} from 'react-redux';
+import {fetchProductsByFilters} from '../redux/slice/productSlice';
 
 const CollectionPage = () => {
-    const [products, setProducts] = useState([]);
+    const {collection} = useParams();
+    const [searchParams] = useSearchParams();
+    const dispatch = useDispatch();
     const sidebarRef = useRef(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const {products, loading, error} = useSelector((state) => state.products);
+
+    useEffect(() => {
+        const queryParams = Object.fromEntries([...searchParams]);
+        dispatch(fetchProductsByFilters({collection, ...queryParams}));
+    }, [dispatch, collection, searchParams]);
 
     const toggleSideBar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -27,101 +38,101 @@ const CollectionPage = () => {
         }
     },[]);
 
-    useEffect(() => {
-        setTimeout(() => {
-            const fetchProducts = [
-                {
-                    _id: '1',
-                    name: 'Product 1',
-                    price: 29.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 1 Image'
-                        }
-                    ]
-                },
-                {
-                    _id: '2',
-                    name: 'Product 2',
-                    price: 39.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 2 Image'
-                        }
-                    ]
-                },
-                {
-                    _id: '3',
-                    name: 'Product 3',
-                    price: 49.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 3 Image'
-                        }
-                    ]
-                },
-                {
-                    _id: '4',
-                    name: 'Product 4',
-                    price: 59.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 4 Image'
-                        }
-                    ]
-                },
-                {
-                    _id: '5',
-                    name: 'Product 5',
-                    price: 69.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 5 Image'
-                        }
-                    ]
-                },
-                {
-                    _id: '6',
-                    name: 'Product 6',
-                    price: 79.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 6 Image'
-                        }
-                    ]
-                },
-                {
-                    _id: '7',
-                    name: 'Product 7',
-                    price: 89.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 7 Image'
-                        }
-                    ]
-                },
-                {
-                    _id: '8',
-                    name: 'Product 8',
-                    price: 99.99,
-                    images: [
-                        {
-                            url: 'https://via.placeholder.com/150',
-                            altText: 'Product 8 Image'
-                        }
-                    ]
-                }
-            ]
-            setProducts(fetchProducts);
-        }, 1000);
-    }, [])
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         const fetchProducts = [
+    //             {
+    //                 _id: '1',
+    //                 name: 'Product 1',
+    //                 price: 29.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 1 Image'
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 _id: '2',
+    //                 name: 'Product 2',
+    //                 price: 39.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 2 Image'
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 _id: '3',
+    //                 name: 'Product 3',
+    //                 price: 49.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 3 Image'
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 _id: '4',
+    //                 name: 'Product 4',
+    //                 price: 59.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 4 Image'
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 _id: '5',
+    //                 name: 'Product 5',
+    //                 price: 69.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 5 Image'
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 _id: '6',
+    //                 name: 'Product 6',
+    //                 price: 79.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 6 Image'
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 _id: '7',
+    //                 name: 'Product 7',
+    //                 price: 89.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 7 Image'
+    //                     }
+    //                 ]
+    //             },
+    //             {
+    //                 _id: '8',
+    //                 name: 'Product 8',
+    //                 price: 99.99,
+    //                 images: [
+    //                     {
+    //                         url: 'https://via.placeholder.com/150',
+    //                         altText: 'Product 8 Image'
+    //                     }
+    //                 ]
+    //             }
+    //         ]
+    //         setProducts(fetchProducts);
+    //     }, 1000);
+    // }, [])
     return (
         <div className='flex flex-col lg:flex-row'>
             <button
@@ -140,7 +151,7 @@ const CollectionPage = () => {
                {/* Sort Options */}
                <SortOptions/>
                {/* Grid for the products */}
-               <ProductGrid products={products} />
+               <ProductGrid products={products} loading={loading} error={error} />
             </div>
 
         </div>
