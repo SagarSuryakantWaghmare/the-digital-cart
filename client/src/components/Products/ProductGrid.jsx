@@ -1,8 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-const ProductGrid = ({ products }) => {
-    if (!Array.isArray(products) || products.length === 0) {
-        return <div className="text-center text-gray-500 py-10">No products found.</div>;
+const ProductGrid = ({ products, loading, error }) => {
+    if (loading) {
+        return <div className="text-center py-10">Loading products...</div>;
+    }
+    if (error) {
+        return <div className="text-center py-10 text-red-500">{error}</div>;
     }
     return (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6  '>

@@ -9,7 +9,7 @@ const router = express.Router();
 
 const getCart = async (userId, guestId) => {
     if (userId) {
-        return await Cart.findOne({ user: useId });
+        return await Cart.findOne({ user: userId });
     }
     else if (guestId) {
         return await Cart.findOne({ guestId });
@@ -22,9 +22,9 @@ const getCart = async (userId, guestId) => {
 // add a product to the cart for a guest or logged in user
 // Access public
 router.post("/", async (req, res) => {
-    const { ProductId, quantity, size, color, guestId, userId } = req.body;
+    const { productId, quantity, size, color, guestId, userId } = req.body;
     try {
-        const product = await Product.findById(ProductId);
+        const product = await Product.findById(productId);
         if (!product) return res.status(404).json({ message: "Product not found" });
 
         // Determine if the user is logged in or guest
@@ -32,8 +32,8 @@ router.post("/", async (req, res) => {
 
         // If the cart exists, update it
         if (cart) {
-            const productIndex = cart.products.findById((p) => {
-                p.ProductId.toString() === ProductId
+            const productIndex = cart.products.findIndex((p) => {
+                return p.productId.toString() === productId
                     && p.size === size
                     && p.color === color
             });
@@ -44,7 +44,7 @@ router.post("/", async (req, res) => {
             }
             else {
                 cart.products.push({
-                    ProductId,
+                    productId,
                     name: product.name,
                     image: product.images[0].url,
                     price: product.price,
@@ -66,7 +66,7 @@ router.post("/", async (req, res) => {
                 guestId: guestId ? guestId : "guest_" + new Date().getTime(),
                 products: [
                     {
-                        ProductId,
+                        productId,
                         name: product.name,
                         image: product.images[0].url,
                         price: product.price,
@@ -90,27 +90,27 @@ router.post("/", async (req, res) => {
 //update product quanity in the cart for a guest or logged in user
 // access is public
 router.put("/", async (req, res) => {
-    const { ProductId, quantity, size, color, guestId, userId } = req.body;
+    const { productId, quantity, size, color, guestId, userId } = req.body;
 
     try {
         let cart = await getCart(userId, guestId);
         if (!cart) return res.status(404).json({ message: "Cart not found" });
         const productIndex = cart.products.findIndex(
             (p) =>
-                p.ProductId.toString() === ProductId &&
+                p.productId.toString() === productId &&
                 p.size === size &&
                 p.color === color
         )
 
         if (productIndex > -1) {
             if (quantity > 0) {
-                cart.products[productIndex].quantity;
+                cart.products[productIndex].quantity = quantity;
             }
             else {
                 cart.products.splice(productIndex, 1);//Remove product if quantity is 0
             }
             cart.totalPrice = cart.products.reduce(
-                (acc, item) => acc + item.price + item.quantity,
+                (acc, item) => acc + item.price * item.quantity,
                 0
             );
             await cart.save();
@@ -130,13 +130,13 @@ router.put("/", async (req, res) => {
 //Remove a product from the cart
 // Access public
 router.delete("/", async (req, res) => {
-    const { ProductId, size, color, guestId, useId } = req.body;
+    const { productId, size, color, guestId, userId } = req.body;
     try {
         let cart = await getCart(userId, guestId);
         if (!cart) return res.status(404).json({ message: "Cart not found" });
 
         const productIndex = cart.products.findIndex(
-            (p) => p.ProductId.toString() === ProductId
+            (p) => p.productId.toString() === productId
                 && p.size === size && p.color === color
         );
         if (productIndex > -1) {
@@ -160,7 +160,7 @@ router.delete("/", async (req, res) => {
 // route get /api/cart
 //get logged in user's or guest user's cart
 // access public
-router.get("/cart", async (req, res) => {
+router.get("/", async (req, res) => {
     const { userId, guestId } = req.query;
     try {
         const cart = await getCart(userId, guestId);
@@ -196,8 +196,8 @@ router.post("/merge", protect, async (req, res) => {
                 guestCart.products.forEach((guestItem) => {
                     const productIndex = userCart.products.findIndex(
                         (item) =>
-                            item.ProductId.toString() === guestItem.ProductId.toString() &&
-                            item.size() === guestItem && item.color === guestItem.color
+                            item.productId.toString() === guestItem.productId.toString() &&
+                            item.size === guestItem.size && item.color === guestItem.color
                     );
 
                     if (productIndex > -1) {

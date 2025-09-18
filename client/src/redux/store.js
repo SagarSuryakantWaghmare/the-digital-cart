@@ -10,7 +10,7 @@ import adminOrdersReducer from './slice/adminOrderSlice.js';
 const store =configureStore({
     reducer:{
         auth: authReducer,
-        proudcts:productReducer,
+        products:productReducer,
         cart:cartReducer,
         checkout:checkoutReducer,
         order:orderReducer,
