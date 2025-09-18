@@ -42,7 +42,7 @@ const checkoutSlice=createSlice({
             state.loading=false;
             state.checkout=action.payload;
         })
-        .addCase(createCheckout.pending,(state,action)=>{
+        .addCase(createCheckout.rejected,(state,action)=>{
             state.loading=false;
             state.error=action.payload.message;
         })

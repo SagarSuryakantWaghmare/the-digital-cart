@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { ArrowLeft,ArrowRight  } from 'lucide-react';
-import {Link } from 'react-router-dom'
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom'
+import axios from 'axios';
 const NewArrivals = () => {
   const scrollRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -9,86 +10,100 @@ const NewArrivals = () => {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
 
-  const NewArrivals = [
-    {
-      _id: "1",
-      name: "Stylish Jacket",
-      price: 1200,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=1",
-          altText: "Stylish Jacket",
-        }
-      ]
-    },
-    {
-      _id: "2",
-      name: "Trendy Hoodie",
-      price: 1500,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=2",
-          altText: "Trendy Hoodie",
-        }
-      ]
-    },
-    {
-      _id: "3",
-      name: "Casual T-Shirt",
-      price: 800,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=3",
-          altText: "Casual T-Shirt",
-        }
-      ]
-    },
-    {
-      _id: "4",
-      name: "Denim Jeans",
-      price: 2000,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=4",
-          altText: "Denim Jeans",
-        }
-      ]
-    },
-    {
-      _id: "5",
-      name: "Sneakers",
-      price: 2500,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=5",
-          altText: "Sneakers",
-        }
-      ]
-    },
-    {
-      _id: "6",
-      name: "Formal Shirt",
-      price: 1300,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=6",
-          altText: "Formal Shirt",
-        }
-      ]
-    },
-    {
-      _id: "7",
-      name: "Leather Belt",
-      price: 600,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=7",
-          altText: "Leather Belt",
-        }
-      ]
-    }
-  ];
+  // const NewArrivals = [
+  //   {
+  //     _id: "1",
+  //     name: "Stylish Jacket",
+  //     price: 1200,
+  //     images: [
+  //       {
+  //         url: "https://picsum.photos/500/500?random=1",
+  //         altText: "Stylish Jacket",
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     _id: "2",
+  //     name: "Trendy Hoodie",
+  //     price: 1500,
+  //     images: [
+  //       {
+  //         url: "https://picsum.photos/500/500?random=2",
+  //         altText: "Trendy Hoodie",
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     _id: "3",
+  //     name: "Casual T-Shirt",
+  //     price: 800,
+  //     images: [
+  //       {
+  //         url: "https://picsum.photos/500/500?random=3",
+  //         altText: "Casual T-Shirt",
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     _id: "4",
+  //     name: "Denim Jeans",
+  //     price: 2000,
+  //     images: [
+  //       {
+  //         url: "https://picsum.photos/500/500?random=4",
+  //         altText: "Denim Jeans",
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     _id: "5",
+  //     name: "Sneakers",
+  //     price: 2500,
+  //     images: [
+  //       {
+  //         url: "https://picsum.photos/500/500?random=5",
+  //         altText: "Sneakers",
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     _id: "6",
+  //     name: "Formal Shirt",
+  //     price: 1300,
+  //     images: [
+  //       {
+  //         url: "https://picsum.photos/500/500?random=6",
+  //         altText: "Formal Shirt",
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     _id: "7",
+  //     name: "Leather Belt",
+  //     price: 600,
+  //     images: [
+  //       {
+  //         url: "https://picsum.photos/500/500?random=7",
+  //         altText: "Leather Belt",
+  //       }
+  //     ]
+  //   }
+  // ];
 
+  const [newArrivals, setNewArrivals] = useState([]);
+  useEffect(() => {
+    const fetchNewArrival = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`
+        );
+        setNewArrivals(response.data);
+      } catch (error) {
+         console.error(error);
+      }
+    };
+    fetchNewArrival();
+  },[])
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - scrollRef.current.offsetLeft);
@@ -96,9 +111,9 @@ const NewArrivals = () => {
   }
   const handleMouseMove = (e) => {
     if (!isDragging) return;
-    const x=e.pageX-scrollRef.current.offsetLeft;
-    const walk=(x-startX);
-    scrollRef.current.scrollLeft=scrollLeft-walk;
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = (x - startX);
+    scrollRef.current.scrollLeft = scrollLeft - walk;
   };
   const handleMouseLeave = () => {
     setIsDragging(false);
@@ -128,13 +143,13 @@ const NewArrivals = () => {
       container.removeEventListener("scroll", updateScrollButtons);
       window.removeEventListener("resize", updateScrollButtons);
     };
-  }, []);
+  }, [newArrivals]);
 
   // Also update scroll buttons after scroll by button
   const scroll = (direction) => {
     const scrollAmount = direction === "left" ? -300 : 300;
     scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    setTimeout(updateScrollButtons, 350); 
+    setTimeout(updateScrollButtons, 350);
   }
 
   return (
@@ -164,7 +179,7 @@ const NewArrivals = () => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
         className={`container mx-auto overflow-x-scroll flex space-x-6 relative${isDragging ? ' cursor-grabbing' : ' cursor-grab'}`}>
-        {NewArrivals.map((product) => (
+        {newArrivals.map((product) => (
           <div key={product._id} className='min-w-[100%] sm:min-w-[50%] lg:min-w-[30%] relative'>
             <img src={product.images[0]?.url}
               alt={product.images[0]?.altText || product.name}
