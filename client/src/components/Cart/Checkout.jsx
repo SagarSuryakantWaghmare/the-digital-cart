@@ -27,10 +27,10 @@ const Checkout = () => {
         }
     }, [cart, navigate]);
 
-    const handleCreateCheckout = (e) => {
+    const handleCreateCheckout = async (e) => {
         e.preventDefault();
         if (cart && cart.products.length > 0) {
-            const res = dispatch(
+            const res = await dispatch(
                 createCheckout({
                     checkoutItems: cart.products,
                     shippingAddress,
@@ -47,33 +47,45 @@ const Checkout = () => {
     const handlePaymentSuccess = async (details) => {
         try {
             const response = await axios.put(
-                `${import.meta.env.VITE_BACKEND_URL}/api/checkout/pay`,
+                `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/pay`,
                 { paymentStatus: "paid", paymentDetails: details },
                 {
-                    headers:{
-                        Authorization:`Bearer ${localStorage.getItem("userToken")}`,
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                     }
                 }
             );
-            if(response.status===200){
-                 await handleFinalizeCheckout(CheckoutId);
-                //  If payment successful
-            }
-            else{
-                console.error(error);
-            }
+            await handleFinalizeCheckout(CheckoutId);
+            //  Payment successful, navigation handled in finalizeCheckout
         } catch (error) {
-            console.error(error);
+            console.error("Payment error:", error);
         }
-        navigate('/order-confirmation');
     };
 
-    const handleFinalizeCheckout=async(CheckoutId)=>{
+    const handleFinalizeCheckout = async (CheckoutId) => {
         try {
-            const response=await axios.post(``)
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/finalize`,
+                {},
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`
+                    }
+                }
+            );
+            if (response.status === 200) {
+                navigate(`/order-confirmation?orderId=${CheckoutId}`);
+            } else {
+                console.error("Finalize checkout failed");
+            }
         } catch (error) {
-            
+            console.error("Finalize checkout error:", error);
         }
+    };
+
+    if (loading) return <p>Loading cart ...</p>;
+    if (error) return <p>Error: {error}</p>;
+    if (!cart || !cart.products || cart.products.length === 0) {
+        return <p>Your cart is Empty</p>;
     }
     return (
         <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking-tighter'>
@@ -88,7 +100,7 @@ const Checkout = () => {
                     </h3>
                     <div className='mb-4'>
                         <label className='block text-gray-700 '>Email</label>
-                        <input type="email" value="rajat@gmail.com" className='w-full p-2 border rounded'
+                        <input type="email" value={user ? user.email : ""} className='w-full p-2 border rounded'
                             disabled />
                     </div>
                     <h3 className='text-lg mb-4 '>
@@ -160,7 +172,7 @@ const Checkout = () => {
                                     Pay with paypal
                                 </h3>
                                 <PayPalButton
-                                    amount={100}
+                                    amount={cart.totalPrice}
                                     onSuccess={handlePaymentSuccess}
                                     onError={(err) => alert("Payment failed", err)} />
                             </div>

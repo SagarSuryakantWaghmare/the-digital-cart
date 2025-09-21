@@ -1,10 +1,15 @@
 import React from 'react'
 import { FaBoxOpen, FaClipboardList, FaSignOutAlt, FaStore, FaUser } from 'react-icons/fa'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { logout } from '../../redux/slice/authSlice'
 
 const AdminSidebar = () => {
-  const navigate=useNavigate();
-  const handleLogout=()=>{
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const handleLogout = () => {
+    dispatch(logout());
     navigate("/");
   }
   return (
@@ -18,6 +23,10 @@ const AdminSidebar = () => {
         Admin Dashboard
       </h2>
       <nav className="flex flex-col space-y-2">
+        <NavLink to="/admin" className={({ isActive }) => isActive ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}>
+          <FaStore />
+          <span>Dashboard</span>
+        </NavLink>
         <NavLink to="/admin/users" className={({ isActive }) => isActive ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}>
           <FaUser />
           <span>Users</span>
@@ -29,10 +38,6 @@ const AdminSidebar = () => {
         <NavLink to="/admin/orders" className={({ isActive }) => isActive ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}>
           <FaClipboardList />
           <span>Orders</span>
-        </NavLink>
-        <NavLink to="/admin/shop" className={({ isActive }) => isActive ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2" : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"}>
-          <FaStore />
-          <span>Shop</span>
         </NavLink>
       </nav>
       <div className='mt-6'>

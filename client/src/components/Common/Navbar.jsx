@@ -8,6 +8,7 @@ const Navbar = () => {
     const [cartOpen, setCartOpen] = useState(false);
     const [navbarOpen, setNavbarOpen] = useState(false);
     const { cart } = useSelector((state) => state.cart);
+    const { user } = useSelector((state) => state.auth);
 
     const cartItemCount = cart?.products?.reduce((total, products) => total + products.quantity, 0) || 0;
     const toggleNavbar = () => {
@@ -40,10 +41,13 @@ const Navbar = () => {
                 </div>
                 {/* Right section for the icons */}
                 <div className='flex items-center space-x-4 '>
-                    <Link to="/admin"
-                        className='block bg-black px-2 rounded text-sm'
-                    >Admin
-                    </Link>
+                    {user && user.role === 'admin' && (
+                        <Link to="/admin"
+                            className='block bg-black px-2 rounded text-sm'
+                        >Admin
+                        </Link>
+                    )}
+
                     <Link to="/profile"
                         className='hover:text-black'
                     >
