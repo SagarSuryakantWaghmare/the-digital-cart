@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 const Cart = ({ toggleCart, cartOpen }) => {
   const navigate = useNavigate();
   const { user, guestId } = useSelector((state) => state.auth);
-  const { cart } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.cart);
   const userId = user ? user._id : null;
   const handleCheckout = () => {
     cartOpen();
@@ -34,7 +34,7 @@ const Cart = ({ toggleCart, cartOpen }) => {
       {/* Scrollable cart content */}
       <div className="flex-grow p-4 overflow-y-auto flex flex-col">
         <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
-        {cart && cart?.product?.length > 0 ? (
+        {cart && cart?.products?.length > 0 ? (
           <div className="flex-grow">
             <CartContainer cart={cart} userId={userId} guestId={guestId} />
           </div>

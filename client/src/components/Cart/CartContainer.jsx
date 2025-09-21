@@ -48,11 +48,12 @@ const CartContainer = ({ cart, userId, guestId }) => {
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
-      {cart.product.map((product, index) => (
-        <div
-          key={index}
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 border-b gap-4"
-        >
+      {cart?.products && cart.products.length > 0 ? (
+        cart.products.map((product, index) => (
+          <div
+            key={index}
+            className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 border-b gap-4"
+          >
           {/* Left section: Image + Info */}
           <div className="flex items-start w-full sm:w-auto">
             <img
@@ -96,7 +97,12 @@ const CartContainer = ({ cart, userId, guestId }) => {
             </button>
           </div>
         </div>
-      ))}
+        ))
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-gray-500">Your cart is empty</p>
+        </div>
+      )}
     </div>
   )
 }

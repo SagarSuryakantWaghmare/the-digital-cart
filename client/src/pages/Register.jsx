@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import login from '../assets/BeachLook.jpg';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { registerUser } from '../redux/slice/authSlice';
@@ -83,7 +83,7 @@ const Register = () => {
             </button>
             <p className='mt-6 text-center text-sm'>
               Don't have an account?
-              <Link to="/login" className="text-blue-500">
+              <Link to={`/login?redirect=${encodeURIComponent(redirect)}`} className="text-blue-500">
               Login
               </Link>
             </p>

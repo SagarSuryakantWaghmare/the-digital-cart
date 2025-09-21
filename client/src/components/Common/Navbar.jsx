@@ -9,7 +9,7 @@ const Navbar = () => {
     const [navbarOpen, setNavbarOpen] = useState(false);
     const { cart } = useSelector((state) => state.cart);
 
-    const cartItemCount = cart?.products?.reduce((total, products) => total + products.q, 0) || 0;
+    const cartItemCount = cart?.products?.reduce((total, products) => total + products.quantity, 0) || 0;
     const toggleNavbar = () => {
         setNavbarOpen(!navbarOpen);
     }
