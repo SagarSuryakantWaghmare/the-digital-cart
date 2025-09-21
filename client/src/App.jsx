@@ -8,6 +8,7 @@ import Register from './pages/Register'
 import { Toaster } from 'sonner'
 import Profile from './pages/Profile'
 import CollectionPage from './pages/CollectionPage'
+import CartPage from './pages/CartPage'
 import Checkout from './components/Cart/Checkout'
 import ProductDetails from './components/Products/ProductDetails'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
@@ -35,6 +36,7 @@ const App = () => {
             <Route path='profile' element={<Profile />} />
             <Route path='collections/:collection' element={<CollectionPage />} />
             <Route path='product/:id' element={<ProductDetails />} />
+            <Route path='cart' element={<CartPage />} />
             <Route path='checkout' element={<Checkout />} />
             <Route path='order-confirmation' element={<OrderConfirmationPage />} />
             <Route path='order/:id' element={<OrderDetailsPage />} />

@@ -48,20 +48,30 @@ const Cart = ({ toggleCart, cartOpen }) => {
 
         {/* Sticky checkout button */}
         <div className="sticky bottom-0 bg-white p-4 border-t">
-          {cart && cart?.product?.length > 0 && (
+          {cart && cart?.products?.length > 0 && (
             <>
-              <button
-                onClick={handleCheckout}
-                className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
-              >
-                Checkout
-              </button>
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    toggleCart();
+                    navigate('/cart');
+                  }}
+                  className="w-full bg-gray-100 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
+                >
+                  View Cart ({cart.products.length} {cart.products.length === 1 ? 'item' : 'items'})
+                </button>
+                <button
+                  onClick={handleCheckout}
+                  className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+                >
+                  Proceed to Checkout
+                </button>
+              </div>
               <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">
-                Checkout here with the GST and taxes
+                Checkout here with GST and taxes
               </p>
             </>
           )}
-
         </div>
       </div>
     </div>
