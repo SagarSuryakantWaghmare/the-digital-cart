@@ -81,31 +81,31 @@ const authSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(loginUser.fulfilled,(state,action)=>{
-                state.loading=false;
-                state.user=action.payload;
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload.message;
             })
-            .addCase(loginUser.rejected,(state,action)=>{
-                  state.loading=false;
-                  state.error=action.payload.message;
+            .addCase(loginUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
             })
             .addCase(registerUser.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(registerUser.fulfilled,(state,action)=>{
-                state.loading=false;
-                state.user=action.payload;
+            .addCase(registerUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
             })
-            .addCase(registerUser.rejected,(state,action)=>{
-                  state.loading=false;
-                  state.error=action.payload.message;
+            .addCase(registerUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload.message;
             })
 
 
     }
 })
 
-export const {logout,generateNewGuestId}=authSlice.actions;
+export const { logout, generateNewGuestId } = authSlice.actions;
 
 export default authSlice.reducer;

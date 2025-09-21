@@ -1,20 +1,28 @@
 import { X } from 'lucide-react';
 import React from 'react';
-import CardContainer from '../Cart/CartContainer';
 import CartContainer from '../Cart/CartContainer';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Cart = ({ toggleCart, cartOpen }) => {
-  const navigate=useNavigate();
-  const handleCheckout=()=>{
-   navigate('/checkout');
+  const navigate = useNavigate();
+  const { user, guestId } = useSelector((state) => state.auth);
+  const { cart } = useSelector((state) => state.auth);
+  const userId = user ? user._id : null;
+  const handleCheckout = () => {
+    cartOpen();
+    if (!user) {
+      navigate("/login?redirect=checkout");
+    }
+    else {
+      navigate('/checkout');
+    }
   }
   return (
     <div
       className={`fixed top-0 right-0 w-3/4 sm:w-1/2 md:w-1/4 h-full bg-white shadow-lg
-      transform transition-transform duration-300 flex flex-col z-50 ${
-        cartOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}
+      transform transition-transform duration-300 flex flex-col z-50 ${cartOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
     >
       {/* Close button */}
       <div className="flex justify-end p-4">
@@ -26,23 +34,34 @@ const Cart = ({ toggleCart, cartOpen }) => {
       {/* Scrollable cart content */}
       <div className="flex-grow p-4 overflow-y-auto flex flex-col">
         <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
-
+        {cart && cart?.product?.length > 0 ? (
+          <div className="flex-grow">
+            <CartContainer cart={cart} userId={userId} guestId={guestId} />
+          </div>
+        ) :
+          (
+            <p>Your cart is empty.</p>
+          )
+        }
         {/* Card container */}
-        <div className="flex-grow">
-          <CartContainer />
-        </div>
+
 
         {/* Sticky checkout button */}
         <div className="sticky bottom-0 bg-white p-4 border-t">
-          <button
-          onClick={handleCheckout}
-            className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
-          >
-            Checkout
-          </button>
-          <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">
-            Checkout here with the GST and taxes
-          </p>
+          {cart && cart?.product?.length > 0 && (
+            <>
+              <button
+                onClick={handleCheckout}
+                className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition"
+              >
+                Checkout
+              </button>
+              <p className="text-sm tracking-tighter text-gray-500 mt-2 text-center">
+                Checkout here with the GST and taxes
+              </p>
+            </>
+          )}
+
         </div>
       </div>
     </div>

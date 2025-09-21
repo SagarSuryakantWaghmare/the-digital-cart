@@ -1,15 +1,23 @@
 import React from 'react'
 import { useState } from 'react'
 import { Search, X } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {fetchProductsByFilters} from '../../redux/slice/productSlice'
 const SearchBar = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch=useDispatch();
+  const navigate=useNavigate();
   const handleSearchToggle = () => {
     setIsOpen(!isOpen);
   }
   const handleSearch = (e) => {
     e.preventDefault();
+    dispatch(setFilters({search:searchTerm}));
+    dispatch(fetchProductsByFilters({search:searchTerm}));
+    navigate(`/collections/all?search=${searchTerm}`)
     console.log("Search Term:", searchTerm);
   }
 return (
