@@ -23,9 +23,17 @@ export const fetchCart = createAsyncThunk("cart/fetchCart",
             )
             return response.data;
         } catch (error) {
-            console.error(error);
-            return rejectWithValue(error.response.data);
-
+            console.error("Cart fetch error:", error);
+            // If cart doesn't exist or there's an error, return empty cart structure
+            if (error.response?.status === 404) {
+                return {
+                    user: userId || null,
+                    guestId: guestId || null,
+                    products: [],
+                    totalPrice: 0
+                };
+            }
+            return rejectWithValue(error.response?.data || error.message);
         }
     }
 );
@@ -90,11 +98,12 @@ export const removeFromCart = createAsyncThunk("cart/removeFromCart", async ({ p
 
 //merge guest cart into user cart
 export const mergeCart = createAsyncThunk("cart/mergeCart", async (
-    { guestId, user }, { rejectWithValue }
+    { guestId }, { rejectWithValue }
 ) => {
     try {
         const response = await axios.post(
             `${import.meta.env.VITE_BACKEND_URL}/api/cart/merge`,
+            { guestId },
             {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("userToken")}`,
@@ -103,7 +112,7 @@ export const mergeCart = createAsyncThunk("cart/mergeCart", async (
         );
         return response.data;
     } catch (error) {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue(error.response?.data || error.message);
     }
 });
 

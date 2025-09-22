@@ -17,6 +17,20 @@ export const fetchAdminProducts = createAsyncThunk("adminProducts/fetchProducts"
     }
 });
 
+// async thunk to fetch single product details (admin)
+export const fetchProductDetails = createAsyncThunk("adminProducts/fetchProductDetails", async (id, { rejectWithValue }) => {
+    try {
+        const response = await axios.get(`${API_URL}/api/admin/products/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+            }
+        });
+        return response.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data || error.message);
+    }
+});
+
 // async function to create a new product
 export const createProduct = createAsyncThunk("adminProducts/createProduct", async (productData, { rejectWithValue }) => {
     try {
@@ -74,6 +88,7 @@ const adminProductSlice = createSlice({
     name: "adminProducts",
     initialState: {
         products: [],
+        product: null, // For single product details
         loading: false,
         error: null,
 
@@ -91,6 +106,18 @@ const adminProductSlice = createSlice({
             .addCase(fetchAdminProducts.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            // Fetch single product details
+            .addCase(fetchProductDetails.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(fetchProductDetails.fulfilled, (state, action) => {
+                state.loading = false;
+                state.product = action.payload;
+            })
+            .addCase(fetchProductDetails.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || action.error.message;
             })
             // Create product
             .addCase(createProduct.fulfilled, (state, action) => {
