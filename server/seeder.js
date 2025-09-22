@@ -19,16 +19,23 @@ const seedDate=async ()=>{
         await Cart.deleteMany();
 
 
-        // Create a default admin User
-        const createdUser=await User.create({
+        // Create admin users
+        const adminUser1 = await User.create({
             name:"Sagar Waghmare",
             email:"sagar@gmail.com",
             password:"sagar@2004",
             role:"admin",
         });
 
+        const adminUser2 = await User.create({
+            name:"Admin User",
+            email:"admin@gmail.com",
+            password:"admins",
+            role:"admin",
+        });
+
         // Assign the default user ID to each product
-        const userId=createdUser._id;
+        const userId = adminUser1._id;
 
         const sampleProducts=products.map((product=>{
             return {...product,user:userId};
