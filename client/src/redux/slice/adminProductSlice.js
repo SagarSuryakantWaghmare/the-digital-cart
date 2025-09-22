@@ -129,6 +129,19 @@ const adminProductSlice = createSlice({
                 }
             }
             )
+            // Update product
+            .addCase(updateProduct.fulfilled, (state, action) => {
+                const index = state.products.findIndex(
+                    (product) => product._id === action.payload._id
+                );
+                if (index !== -1) {
+                    state.products[index] = action.payload;
+                }
+                // Also update the single product if it's the one being edited
+                if (state.product && state.product._id === action.payload._id) {
+                    state.product = action.payload;
+                }
+            })
             // Delete product
             .addCase(deleteProduct.fulfilled, (state, action) => {
                 state.products = state.products.filter(

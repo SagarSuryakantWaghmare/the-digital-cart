@@ -37,7 +37,12 @@ const EditProductPage = () => {
 
     useEffect(()=>{
        if(product){
-        setProductData(product);
+        setProductData({
+            ...product,
+            images: product.images || [],
+            sizes: product.sizes || [],
+            colors: product.colors || []
+        });
        } 
     },[product]);
     const handleChange = (e) => {
@@ -46,24 +51,37 @@ const EditProductPage = () => {
     }
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        const formData=new FormData();
-        formData.append("image",file);
+        if (!file) {
+            return;
+        }
+        
+        console.log("Uploading file:", file.name, file.size, file.type);
+        
+        const formData = new FormData();
+        formData.append("image", file);
+        
         try {
             setUploading(true);
-            const {data}=await axios.post(
+            console.log("Making upload request to:", `${import.meta.env.VITE_BACKEND_URL}/api/upload`);
+            
+            const { data } = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
-                formData,
-                {
-                    headers:{"Content-Type":"multipart/form-data"},
-                }
-            )
-            setProductData((prevData)=>({
+                formData
+            );
+            
+            console.log("Upload response:", data);
+            
+            setProductData((prevData) => ({
                 ...prevData,
-                images:[...prevData.images,{url:data.imageUrl,altText:""}],
+                images: [...(prevData.images || []), { url: data.imageUrl, altText: "" }],
             }));
             setUploading(false);
+            
+            // Clear the file input
+            e.target.value = '';
         } catch (error) {
-            console.error(error);
+            console.error("Image upload error:", error.response?.data || error.message);
+            alert(`Failed to upload image: ${error.response?.data?.message || error.message}`);
             setUploading(false);
         }
     }
@@ -138,9 +156,16 @@ const EditProductPage = () => {
                 {/* Image upload */}
                 <div className='mb-6'>
                     <label className='block font-semibold mb-2'>Upload Image</label>
-                    <input type="file" onChange={handleImageUpload} />
+                    <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageUpload}
+                        disabled={uploading}
+                        className='w-full border border-gray-300 rounded-md p-2'
+                    />
+                    {uploading && <p className='text-blue-500 mt-2'>Uploading image...</p>}
                     <div className='flex gap-4 mt-4'>
-                        {productData.images.map((image, index) => (
+                        {productData.images && productData.images.map((image, index) => (
                             <div key={index}>
                                 <img src={image.url}
                                     alt={image.alt || "Product Image"}
