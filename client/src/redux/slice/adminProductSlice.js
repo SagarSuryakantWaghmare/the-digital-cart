@@ -4,8 +4,8 @@ import axios from "axios";
 const API_URL = `${import.meta.env.VITE_BACKEND_URL}`;
 const USER_TOKEN = `Bearer ${localStorage.getItem("userToken")}`;
 // async thunk to fetch admin products
-export const fetchAdminProuducts = createAsyncThunk("adminProuducts/fetchProducts", async () => {
-    const response = await axios.get(`${API_URL}/api/admin/prouducts`, {
+export const fetchAdminProducts = createAsyncThunk("adminProducts/fetchProducts", async () => {
+    const response = await axios.get(`${API_URL}/api/admin/products`, {
         headers: {
             Authorization: USER_TOKEN,
         }
@@ -14,7 +14,7 @@ export const fetchAdminProuducts = createAsyncThunk("adminProuducts/fetchProduct
 });
 
 // async function to create a new product
-export const createProduct = createAsyncThunk("adminProuducts/createProduct", async (productData) => {
+export const createProduct = createAsyncThunk("adminProducts/createProduct", async (productData) => {
     const response = await axios.post(
         `${API_URL}/api/admin/products`,
         productData,
@@ -53,10 +53,8 @@ export const deleteProduct = createAsyncThunk('adminProducts/deleteProduct', asy
     await axios.delete(`${API_URL}/api/admin/products/${id}`,
         {
             headers: {
-                Authorization: {
-                    Authorization: USER_TOKEN
-                },
-            }
+                Authorization: USER_TOKEN
+            },
         }
     )
     return id;
@@ -73,14 +71,14 @@ const adminProductSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchAdminProuducts.pending, (state) => {
+            .addCase(fetchAdminProducts.pending, (state) => {
                 state.loading = true;
             })
-            .addCase(fetchAdminProuducts.fulfilled, (state, action) => {
+            .addCase(fetchAdminProducts.fulfilled, (state, action) => {
                 state.loading = false;
                 state.products = action.payload;
             })
-            .addCase(fetchAdminProuducts.rejected, (state, action) => {
+            .addCase(fetchAdminProducts.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
@@ -90,7 +88,7 @@ const adminProductSlice = createSlice({
                     (product) => product._id === action.payload._id
                 );
                 if (index !== -1) {
-                    state.product[index] = action.payload;
+                    state.products[index] = action.payload;
                 }
             }
             )

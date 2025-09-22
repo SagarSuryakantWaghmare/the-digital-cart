@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import {useDispatch,useSelector} from 'react-redux'
-import {fetchAdminProducts} from '../redux/slice/adminProductSlice'
-import {fetchAllOrders} from '../redux/slice/adminOrderSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchAdminProducts } from '../redux/slice/adminProductSlice'
+import { fetchAllOrders } from '../redux/slice/adminOrderSlice'
 const AdminHomePage = () => {
     const dispatch = useDispatch();
-    const {products,loading:productsLoading,error:productError}=useSelector((state)=>state.adminProducts);
-    const{orders,totalOrders,totalSales,loading:ordersLoading,error:ordersError}=useSelector((state)=>state.adminOrders);
+    const { products, loading: productsLoading, error: productError } = useSelector((state) => state.adminProducts);
+    const { orders, totalOrders, totalSales, loading: ordersLoading, error: ordersError } = useSelector((state) => state.adminOrders);
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fetchAdminProducts());
         dispatch(fetchAllOrders());
-    })
+    },[dispatch])
 
 
 
@@ -21,35 +21,44 @@ const AdminHomePage = () => {
             <h1 className='text-3xl font-bold mb-6'>
                 Admin Dashboard
             </h1>
-            
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                <div className='p-4 shadow-md rounded-lg'>
-                    <h2 className='text-xl font-semibold'>Revenue</h2>
-                    <p className='text-2xl'>
-                        1400rs
-                    </p>
-                </div>
-                <div className='p-4 shadow-md rounded-lg'>
-                    <h2 className='text-xl font-semibold'>Total Orders</h2>
-                    <p className='text-2xl'>
-                        200
-                    </p>
-                    <Link to="/admin/orders" className='text-blue-500 hover:underline'>
-                        Manage Orders
-                    </Link>
-                </div>
+            {(productsLoading || ordersLoading) ? (
+                <p>Loading...</p>
+            ) : productError ? (
+                <p className='text-red-500'>Error fetching products: {productError}</p>
+            ) : ordersError ? (
+                <p className='text-red-500'>Error fetching orders: {ordersError}</p>
+            ) : (
 
-                <div className='p-4 shadow-md rounded-lg'>
-                    <h2 className='text-xl font-semibold'>Total Products</h2>
-                    <p className='text-2xl'>
-                        4
-                    </p>
-                    <Link to="/admin/Products" className='text-blue-500 hover:underline'>
-                        Manage Products
-                    </Link>
-                </div>
 
-            </div>
+                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+                    <div className='p-4 shadow-md rounded-lg'>
+                        <h2 className='text-xl font-semibold'>Revenue</h2>
+                        <p className='text-2xl'>
+                            ${totalSales.toFixed(2)}
+                        </p>
+                    </div>
+                    <div className='p-4 shadow-md rounded-lg'>
+                        <h2 className='text-xl font-semibold'>Total Orders</h2>
+                        <p className='text-2xl'>
+                            ${totalOrders}
+                        </p>
+                        <Link to="/admin/orders" className='text-blue-500 hover:underline'>
+                            Manage Orders
+                        </Link>
+                    </div>
+
+                    <div className='p-4 shadow-md rounded-lg'>
+                        <h2 className='text-xl font-semibold'>Total Products</h2>
+                        <p className='text-2xl'>
+                            {products.length}
+                        </p>
+                        <Link to="/admin/Products" className='text-blue-500 hover:underline'>
+                            Manage Products
+                        </Link>
+                    </div>
+                </div>
+            )}
+
             <div className='mt-6'>
                 <h2 className='text-2xl font-bold mb-4'>Recent Orders</h2>
                 <div className='overflow-x-auto'>
@@ -68,7 +77,7 @@ const AdminHomePage = () => {
                                     <tr key={order._id} className='border-b hover:bg-gray-50 cursor-pointer'>
                                         <td className='p-4'>{order._id}</td>
                                         <td className='p-4'>{order.user.name}</td>
-                                        <td className='p-4'>{order.totalPrice}</td>
+                                        <td className='p-4'>{order.totalPrice.toFixed(2)}</td>
                                         <td className='p-4'>{order.status}</td>
                                     </tr>
                                 ))
