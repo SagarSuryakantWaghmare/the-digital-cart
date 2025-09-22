@@ -78,12 +78,13 @@ const ProductDetails = ({ productId }) => {
     const [quantity, setQuantity] = useState(1);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const productFetchId = productId || id;
+    
     useEffect(() => {
         if (productFetchId) {
             dispatch(fetchProductDetails(productFetchId));
             dispatch(fetchSimilarProducts({ id: productFetchId }));
         }
-    }, [dispatch]);
+    }, [dispatch, productFetchId]);
 
     useEffect(() => {
         if (selectedProduct?.images?.length > 0) {

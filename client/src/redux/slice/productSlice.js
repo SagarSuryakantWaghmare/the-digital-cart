@@ -131,16 +131,13 @@ const productsSlice = createSlice({
             state.loading=false;
             state.error=action.error.message;
         })
-        .addCase(fetchSimilarProducts.pending,(state)=>{
-            state.loading=true;
-            state.error=null;
+        .addCase(fetchSimilarProducts.pending,()=>{
+            // Don't set loading to true for similar products to avoid interfering with main product loading
         })
         .addCase(fetchSimilarProducts.fulfilled,(state,action)=>{
-            state.loading=false;
-            state.products=action.payload;
+            state.similarProducts=action.payload;
         })
         .addCase(fetchSimilarProducts.rejected,(state,action)=>{
-            state.loading=false;
             state.error=action.error.message;
         })
     }
