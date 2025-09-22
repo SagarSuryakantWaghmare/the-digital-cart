@@ -8,7 +8,7 @@ const EditProductPage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { id } = useParams();
-    const { selectedProduct, loading, error } = useSelector((state) => state.products);
+    const { product, loading, error } = useSelector((state) => state.adminProducts);
 
 
     const [productData, setProductData] = useState({
@@ -36,16 +36,16 @@ const EditProductPage = () => {
     }, [dispatch,id]);
 
     useEffect(()=>{
-       if(selectedProduct){
-        setProductData(selectedProduct);
+       if(product){
+        setProductData(product);
        } 
-    },[selectedProduct]);
+    },[product]);
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProductData((prevData) => ({ ...prevData, [name]: value }))
     }
     const handleImageUpload = async (e) => {
-        const file = e.target.file[0];
+        const file = e.target.files[0];
         const formData=new FormData();
         formData.append("image",file);
         try {
@@ -54,7 +54,7 @@ const EditProductPage = () => {
                 `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
                 formData,
                 {
-                    headers:{"Content-Type":"mutipart/form-data"},
+                    headers:{"Content-Type":"multipart/form-data"},
                 }
             )
             setProductData((prevData)=>({
