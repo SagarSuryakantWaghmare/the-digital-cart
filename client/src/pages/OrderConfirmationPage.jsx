@@ -6,7 +6,7 @@ import axios from 'axios'
 const OrderConfirmationPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user } = useSelector((state) => state.auth);
+    useSelector((state) => state.auth);
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -34,6 +34,7 @@ const OrderConfirmationPage = () => {
             } catch (error) {
                 console.error("Failed to fetch order:", error);
                 setError("Failed to load order details");
+                navigate('/my-orders')
             } finally {
                 setLoading(false);
             }

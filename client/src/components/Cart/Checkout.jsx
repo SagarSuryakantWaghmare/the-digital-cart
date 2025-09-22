@@ -55,6 +55,7 @@ const Checkout = () => {
                     }
                 }
             );
+            console.log("Payment success response:", response.data);
             await handleFinalizeCheckout(CheckoutId);
             //  Payment successful, navigation handled in finalizeCheckout
         } catch (error) {
@@ -185,21 +186,22 @@ const Checkout = () => {
             <div className='bg-gray-50 p-6 rounded-lg'>
                 <h3 className='text-lg mb-4'>Order Summary</h3>
                 <div className='border-t py-4 mb-4'>
-                    {cart.products.map((product, index) => (
-                        <div key={index} className='flex items-start justify-between py-2 border-b'>
-                            <div className='flex items-start'>
-                                <img src={product.image} alt={product.name} className='w-20 h-2/4 object-cover mr-4' />
-                                <div>
-                                    <h3 className='text-md'>{product.name}</h3>
-                                    <p className='text-gray-500'>Size:{product.size}</p>
-                                    <p className='text-gray-500'>Color:{product.color}</p>
+                    {cart.products.map((product, index) => {
+                        const imgSrc = product.image || product.images?.[0]?.url || product.imageUrl || 'https://via.placeholder.com/80';
+                        return (
+                            <div key={index} className='flex items-start justify-between py-2 border-b'>
+                                <div className='flex items-start'>
+                                    <img src={imgSrc} alt={product.name || 'Product image'} className='w-20 h-20 object-cover mr-4 rounded' />
+                                    <div>
+                                        <h3 className='text-md'>{product.name}</h3>
+                                        {product.size && <p className='text-gray-500'>Size: {product.size}</p>}
+                                        {product.color && <p className='text-gray-500'>Color: {product.color}</p>}
+                                    </div>
                                 </div>
-                                <p className='text-xl'>
-                                    ${product.price?.toLocaleString()}
-                                </p>
+                                <p className='text-xl font-semibold ml-4'>${Number(product.price || 0).toLocaleString()}</p>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
                 <div className='flex justify-between items-center text-lg mb-4'>
                     <p>Subtotal</p>
