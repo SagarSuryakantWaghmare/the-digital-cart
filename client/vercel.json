@@ -1,0 +1,36 @@
+{
+  "version": 2,
+  "name": "the-digital-cart-frontend",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "headers": {
+        "cache-control": "max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_PAYPAL_CLIENT_ID": "@vite_paypal_client_id",
+    "VITE_BACKEND_URL": "@vite_backend_url",
+    "VITE_NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "VITE_PAYPAL_CLIENT_ID": "@vite_paypal_client_id",
+      "VITE_BACKEND_URL": "@vite_backend_url"
+    }
+  }
+}
