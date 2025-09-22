@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
-import {addUser,updateUser,deleteUser} from '../../redux/slice/adminSlice';
+import {addUser,updateUser,deleteUser,fetchUsers} from '../../redux/slice/adminSlice';
 const UserManagement = () => {
     // const users = [
     //     {
@@ -23,16 +23,22 @@ const UserManagement = () => {
         }
     },[user,navigate])
 
+    useEffect(()=>{
+        if(user&&user.role==='admin'){
+            dispatch(fetchUsers());
+        }
+    },[user,dispatch])
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
-        role: "Customer",
+        role: "customer",
     })
 
     const handleChange = (e) => {
         setFormData({
-            ...FormData,
+            ...formData,
             [e.target.name]: e.target.value,
         })
     }
@@ -48,8 +54,22 @@ const UserManagement = () => {
         })
     }
     const handleRoleChange = (userId, newRole) => {
-        console.log({ id: userId, role: newRole });
-        dispatch(updateUser({id:userId,role:newRole}));
+        console.log("Role change requested:", { id: userId, role: newRole });
+        // Find the user to get their current name and email
+        const userToUpdate = users.find(user => user._id === userId);
+        if (userToUpdate) {
+            console.log("User found for update:", userToUpdate);
+            const updateData = {
+                id: userId,
+                name: userToUpdate.name,
+                email: userToUpdate.email,
+                role: newRole
+            };
+            console.log("Dispatching update with data:", updateData);
+            dispatch(updateUser(updateData));
+        } else {
+            console.error("User not found for ID:", userId);
+        }
     }
 
     const handleDeleteUser = (userId) => {
@@ -73,7 +93,7 @@ const UserManagement = () => {
                         <input
                             type="text"
                             name='name'
-                            value={FormData.name}
+                            value={formData.name}
                             onChange={handleChange}
                             className='w-full p-2 border rounded'
                         />
@@ -83,7 +103,7 @@ const UserManagement = () => {
                         <input
                             type="email"
                             name='email'
-                            value={FormData.email}
+                            value={formData.email}
                             onChange={handleChange}
                             className='w-full p-2 border rounded'
                         />
@@ -93,18 +113,18 @@ const UserManagement = () => {
                         <input
                             type="password"
                             name='password'
-                            value={FormData.name}
+                            value={formData.password}
                             onChange={handleChange}
                             className='w-full p-2 border rounded'
                         />
                     </div>
                     <div className='mb-4'>
                         <label className='block text-gray-700'>Role</label>
-                        <select name="role" value={FormData.role}
+                        <select name="role" value={formData.role}
                             onChange={handleChange}
-                            className='w-full p-2 border rouneded'>
+                            className='w-full p-2 border rounded'>
                             <option value="customer">Customer</option>
-                            <option value="Admin">Admin</option>
+                            <option value="admin">Admin</option>
                         </select>
                     </div>
                     <button
@@ -136,9 +156,10 @@ const UserManagement = () => {
                                 </td>
                                 <td className='p-4'>
                                     <select
-                                        value={user.value}
-                                        className='p-2 border rounded  '
-                                        onChange={(e) => handleRoleChange(user._id, e.target.value)}>
+                                        value={user.role}
+                                        className='p-2 border rounded'
+                                        onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                                        disabled={loading}>
                                         <option value="customer">Customer</option>
                                         <option value="admin">Admin</option>
                                     </select>
