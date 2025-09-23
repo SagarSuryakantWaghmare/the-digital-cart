@@ -4,6 +4,7 @@ import SearchBar from './SearchBar';
 import { User, ShoppingBag, List, Menu, X } from "lucide-react";
 import Cart from './Cart';
 import { useSelector } from 'react-redux';
+import cartGif from '../../assets/icons8-shopping-cart.gif';
 
 const Navbar = () => {
     const [cartOpen, setCartOpen] = useState(false);
@@ -28,8 +29,14 @@ const Navbar = () => {
                     <div className='flex items-center justify-between h-16'>
                         {/* Logo */}
                         <div className='flex items-center'>
-                            <Link to="/" className='text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors duration-200'>
-                                The Digital Cart
+                            <Link to="/" className='flex items-center space-x-2 text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors duration-200'>
+                                <img 
+                                    src={cartGif} 
+                                    alt="Shopping Cart" 
+                                    className='w-8 h-8 hidden sm:block'
+                                    loading="eager"
+                                />
+                                <span>The Digital Cart</span>
                             </Link>
                         </div>
                         
