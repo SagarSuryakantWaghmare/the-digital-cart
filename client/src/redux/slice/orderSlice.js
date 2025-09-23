@@ -21,7 +21,7 @@ export const fetchUserOrders = createAsyncThunk(
     }
 );
 
-// Async thunk to fethc order details by id
+// Async thunk to fetch order details by id
 export const fetchOrderDetails=createAsyncThunk("orders/fetchOrderDetails",async(
     orderId,{rejectWithValue}
 )=>{
@@ -36,7 +36,7 @@ export const fetchOrderDetails=createAsyncThunk("orders/fetchOrderDetails",async
         )
         return response.data;
     } catch (error) {
-        rejectWithValue(error.response.data);
+        return rejectWithValue(error.response?.data || error.message);
     }
 });
 
@@ -60,11 +60,13 @@ const orderSlice=createSlice({
         })
         .addCase(fetchUserOrders.fulfilled,(state,action)=>{
             state.loading=false;
-            action.orders=action.payload;
+            state.orders=action.payload.orders || action.payload; // Handle different response structures
+            state.totalOrders=action.payload.totalOrders || action.payload.length || 0;
+            state.error=null;
         })
         .addCase(fetchUserOrders.rejected,(state,action)=>{
             state.loading=false;
-            state.error=action.payload.message;
+            state.error=action.payload?.message || action.payload || "Failed to fetch orders";
         })
 
         // Fetch order details
@@ -74,11 +76,12 @@ const orderSlice=createSlice({
         })
         .addCase(fetchOrderDetails.fulfilled,(state,action)=>{
             state.loading=false;
-            action.orderDetails=action.payload;
+            state.orderDetails=action.payload.order || action.payload; // Handle different response structures
+            state.error=null;
         })
         .addCase(fetchOrderDetails.rejected,(state,action)=>{
             state.loading=false;
-            state.error=action.payload.message;
+            state.error=action.payload?.message || action.payload || "Failed to fetch order details";
         })
     }
 })
