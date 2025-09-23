@@ -16,11 +16,9 @@ import adminOrderRoutes from './routes/adminOrderRoutes.js';
 
 const app = express();
 
-// CORS configuration for production
+// CORS configuration using environment variables
 const corsOptions = {
-    origin: process.env.NODE_ENV === 'production' 
-        ? process.env.CORS_ORIGIN?.split(',') || ['https://your-vercel-app.vercel.app']
-        : ['http://localhost:3000', 'http://localhost:5173'],
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Use env variable or fallback to localhost
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
