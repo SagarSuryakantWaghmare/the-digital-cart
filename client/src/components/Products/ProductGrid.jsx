@@ -1,12 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { Heart, ShoppingCart, Eye } from 'lucide-react';
+import { ShoppingCart, Eye } from 'lucide-react';
 
 const ProductGrid = ({ products, loading, error }) => {
     if (loading) {
         return (
             <div className="max-w-7xl mx-auto px-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {[...Array(8)].map((_, index) => (
                         <div key={index} className="animate-pulse">
                             <div className="bg-gray-300 h-80 rounded-2xl mb-4"></div>
@@ -32,7 +32,7 @@ const ProductGrid = ({ products, loading, error }) => {
     
     return (
         <div className='max-w-7xl mx-auto px-4'>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8'>
                 {products.map((product, index) => (
                     <div
                         key={index}
@@ -52,9 +52,6 @@ const ProductGrid = ({ products, loading, error }) => {
                             {/* Overlay with quick actions */}
                             <div className='absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
                                 <div className='flex space-x-3'>
-                                    <button className='bg-white p-3 rounded-full hover:bg-gray-100 transition-colors duration-200 transform hover:scale-110'>
-                                        <Heart className='w-5 h-5 text-gray-700' />
-                                    </button>
                                     <Link 
                                         to={`/products/${product._id}`}
                                         className='bg-white p-3 rounded-full hover:bg-gray-100 transition-colors duration-200 transform hover:scale-110'>

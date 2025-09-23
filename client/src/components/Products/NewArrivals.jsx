@@ -241,7 +241,7 @@ const NewArrivals = () => {
         {/* View All Button */}
         <div className='text-center mt-12'>
           <Link 
-            to="/collections/new-arrivals" 
+            to="/collections/all" 
             className='inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-full 
             font-semibold hover:bg-gray-700 transition-all duration-300 transform hover:scale-105'>
             View All New Arrivals

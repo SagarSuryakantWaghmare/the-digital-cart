@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
 
 const FilterSidebar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,20 +17,29 @@ const FilterSidebar = () => {
   })
 
   const [priceRange, setPriceRange] = useState([0, 100]);
+  const [expandedSections, setExpandedSections] = useState({
+    category: true,
+    gender: true,
+    color: true,
+    size: false,
+    material: false,
+    brand: false,
+    price: true
+  });
 
   const categories = ["Top Wear", "Bottom Wear"];
 
   const colors = [
-    "Red",
-    "Blue",
-    "Black",
-    "Green",
-    "Yellow",
-    "Gray",
-    "White",
-    "Pink",
-    "Beige",
-    "Navy",
+    { name: "Red", value: "red", hex: "#ef4444" },
+    { name: "Blue", value: "blue", hex: "#3b82f6" },
+    { name: "Black", value: "black", hex: "#000000" },
+    { name: "Green", value: "green", hex: "#10b981" },
+    { name: "Yellow", value: "yellow", hex: "#f59e0b" },
+    { name: "Gray", value: "gray", hex: "#6b7280" },
+    { name: "White", value: "white", hex: "#ffffff" },
+    { name: "Pink", value: "pink", hex: "#ec4899" },
+    { name: "Beige", value: "beige", hex: "#d4b885" },
+    { name: "Navy", value: "navy", hex: "#1e3a8a" },
   ];
 
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
@@ -58,20 +68,25 @@ const FilterSidebar = () => {
 
   useEffect(() => {
     const params = Object.fromEntries([...searchParams]);
-    // {category:'Top Wear',maxPrice:100}=>Search params
-
     setFilters({
       category: params.category || "",
       gender: params.gender || "",
       color: params.color || "",
       size: params.size ? params.size.split(",") : [],
       material: params.material ? params.material.split(",") : [],
-      brand: params.brand ? params.material.split(",") : [],
+      brand: params.brand ? params.brand.split(",") : [],
       minPrice: params.minPrice || 0,
       maxPrice: params.maxPrice || 100
     });
     setPriceRange([0, params.maxPrice || 100]);
   }, [searchParams]);
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   const handleFilterchange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -79,17 +94,20 @@ const FilterSidebar = () => {
     if (type === 'checkbox') {
       if (checked) {
         newFilters[name] = [...(newFilters[name] || []), value];
-      }
-      else {
+      } else {
         newFilters[name] = newFilters[name].filter((item) => item !== value);
       }
-    }
-    else {
+    } else {
       newFilters[name] = value;
     }
     setFilters(newFilters);
     updateURLParams(newFilters);
-    console.log(newFilters);
+  }
+
+  const handleColorSelect = (colorValue) => {
+    const newFilters = { ...filters, color: filters.color === colorValue ? "" : colorValue };
+    setFilters(newFilters);
+    updateURLParams(newFilters);
   }
 
   const updateURLParams = (newFilters) => {
@@ -97,8 +115,7 @@ const FilterSidebar = () => {
     Object.keys(newFilters).forEach((key) => {
       if (Array.isArray(newFilters[key]) && newFilters[key].length > 0) {
         params.append(key, newFilters[key].join(","));
-      }
-      else if (newFilters[key]) {
+      } else if (newFilters[key]) {
         params.append(key, newFilters[key]);
       }
     });
@@ -110,136 +127,277 @@ const FilterSidebar = () => {
     const newPrice = e.target.value;
     setPriceRange([0, newPrice]);
     const newFilters = { ...filters, minPrice: 0, maxPrice: newPrice };
-    setFilters(filters);
+    setFilters(newFilters);
     updateURLParams(newFilters);
   }
 
+  const clearAllFilters = () => {
+    const clearedFilters = {
+      category: "",
+      gender: "",
+      color: "",
+      size: [],
+      material: [],
+      brand: [],
+      minPrice: 0,
+      maxPrice: 100,
+    };
+    setFilters(clearedFilters);
+    setPriceRange([0, 100]);
+    setSearchParams({});
+    navigate('/collections/all');
+  }
+
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (filters.category) count++;
+    if (filters.gender) count++;
+    if (filters.color) count++;
+    count += filters.size.length;
+    count += filters.material.length;
+    count += filters.brand.length;
+    if (filters.maxPrice < 100) count++;
+    return count;
+  }
+
+  const FilterSection = ({ title, isExpanded, onToggle, children }) => (
+    <div className="border-b border-gray-200 pb-4 mb-4">
+      <button 
+        onClick={onToggle}
+        className="flex items-center justify-between w-full py-2 text-left"
+      >
+        <h4 className="text-sm font-medium text-gray-900">{title}</h4>
+        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+      </button>
+      {isExpanded && (
+        <div className="mt-3 space-y-2">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <div className='p4'>
-      <h3 className='text-xl font-medium text-gray-800 mb-4'>
-        Filter
-      </h3>
-      {/* Category */}
-      <div className='mb-6'>
-        <label className='block text-gray-600 font-medium mb-2'>Category</label>
-        {categories.map((category) => (
-          <div key={category} className='flex items-center mb-1 '>
-            <input
-              type="radio"
-              name='category'
-              value={category}
-              onChange={handleFilterchange}
-              checked={filters.category === category}
-              className='mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300' />
-            <span className='text-gray-700'>{category}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Gender filter */}
-      <div className='mb-6'>
-        <label className='block text-gray-600 font-medium mb-2'>Gender</label>
-        {genders.map((gender) => (
-          <div key={gender} className='flex items-center mb-1 '>
-            <input type="radio"
-              name='gender'
-              value={gender}
-              onChange={handleFilterchange}
-              checked={filters.gender === gender}
-              className='mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300' />
-            <span className='text-gray-700'>{gender}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Color filter */}
-      <div className='mb-6'>
-        <label className='block text-gray-600 font-medium mb-2'>Color</label>
-        <div className='flex flex-wrap gap-2'>
-          {colors.map((color) => (
+    <div className="bg-white h-full overflow-y-auto">
+      {/* Header */}
+      <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Filters
+            {getActiveFilterCount() > 0 && (
+              <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {getActiveFilterCount()}
+              </span>
+            )}
+          </h3>
+          {getActiveFilterCount() > 0 && (
             <button
-              key={color}
-              value={color}
-              onChange={handleFilterchange}
-              name='color'
-              className={`w-8 h-8 rounded-full border border-gray-300 cursor-pointer
-              transition hover:scale-105  ${filters.color === color ? "ring-2 ringblu500" : ""} `}
-              style={{ backgroundColor: color.toLowerCase }}>
+              onClick={clearAllFilters}
+              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            >
+              Clear All
             </button>
+          )}
+        </div>
+      </div>
+
+      <div className="p-4 space-y-0">
+        {/* Category Filter */}
+        <FilterSection 
+          title="Category" 
+          isExpanded={expandedSections.category}
+          onToggle={() => toggleSection('category')}
+        >
+          {categories.map((category) => (
+            <label key={category} className="flex items-center group cursor-pointer">
+              <input
+                type="radio"
+                name="category"
+                value={category}
+                onChange={handleFilterchange}
+                checked={filters.category === category}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+              />
+              <span className="ml-3 text-sm text-gray-700 group-hover:text-gray-900">
+                {category}
+              </span>
+            </label>
           ))}
-        </div>
-      </div>
+        </FilterSection>
 
-      {/* size filter */}
-      <div className='mb-6'>
-        <label className='block text-gray-600 font-medium mb-2'>Size</label>
-        {sizes.map((size) => (
-          <div key={size}
+        {/* Gender Filter */}
+        <FilterSection 
+          title="Gender" 
+          isExpanded={expandedSections.gender}
+          onToggle={() => toggleSection('gender')}
+        >
+          {genders.map((gender) => (
+            <label key={gender} className="flex items-center group cursor-pointer">
+              <input
+                type="radio"
+                name="gender"
+                value={gender}
+                onChange={handleFilterchange}
+                checked={filters.gender === gender}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+              />
+              <span className="ml-3 text-sm text-gray-700 group-hover:text-gray-900">
+                {gender}
+              </span>
+            </label>
+          ))}
+        </FilterSection>
 
-            className='flex items-center mb-1'>
-            <input type="checkbox"
-              value={size}
-              onChange={handleFilterchange}
-              checked={filters.size.includes(size)}
-              name='size' className='mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400
-            border-gray-300' />
-            <span className='text-gray-700'>{size}</span>
+        {/* Color Filter */}
+        <FilterSection 
+          title="Color" 
+          isExpanded={expandedSections.color}
+          onToggle={() => toggleSection('color')}
+        >
+          <div className="grid grid-cols-5 gap-2">
+            {colors.map((color) => (
+              <button
+                key={color.value}
+                onClick={() => handleColorSelect(color.value)}
+                className={`w-8 h-8 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
+                  filters.color === color.value 
+                    ? "border-blue-500 ring-2 ring-blue-200" 
+                    : "border-gray-300 hover:border-gray-400"
+                }`}
+                style={{ backgroundColor: color.hex }}
+                title={color.name}
+              >
+                {color.value === 'white' && (
+                  <div className="w-full h-full rounded-full border border-gray-200" />
+                )}
+              </button>
+            ))}
           </div>
-        ))}
-      </div>
+        </FilterSection>
 
-      {/* Material filter */}
-      <div className='mb-6'>
-        <label className='block text-gray-600 font-medium mb-2'>Material</label>
-        {materials.map((material) => (
-          <div key={material} className='flex items-center mb-1'>
+        {/* Size Filter */}
+        <FilterSection 
+          title="Size" 
+          isExpanded={expandedSections.size}
+          onToggle={() => toggleSection('size')}
+        >
+          <div className="grid grid-cols-3 gap-2">
+            {sizes.map((size) => (
+              <label key={size} className="cursor-pointer">
+                <input
+                  type="checkbox"
+                  value={size}
+                  onChange={handleFilterchange}
+                  checked={filters.size.includes(size)}
+                  name="size"
+                  className="sr-only"
+                />
+                <div className={`text-center py-2 px-3 text-sm border rounded-md transition-colors ${
+                  filters.size.includes(size)
+                    ? "bg-blue-50 border-blue-500 text-blue-700"
+                    : "border-gray-300 text-gray-700 hover:border-gray-400"
+                }`}>
+                  {size}
+                </div>
+              </label>
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* Material Filter */}
+        <FilterSection 
+          title="Material" 
+          isExpanded={expandedSections.material}
+          onToggle={() => toggleSection('material')}
+        >
+          {materials.map((material) => (
+            <label key={material} className="flex items-center group cursor-pointer">
+              <input
+                value={material}
+                onChange={handleFilterchange}
+                checked={filters.material.includes(material)}
+                type="checkbox"
+                name="material"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="ml-3 text-sm text-gray-700 group-hover:text-gray-900">
+                {material}
+              </span>
+            </label>
+          ))}
+        </FilterSection>
+
+        {/* Brand Filter */}
+        <FilterSection 
+          title="Brand" 
+          isExpanded={expandedSections.brand}
+          onToggle={() => toggleSection('brand')}
+        >
+          {brands.map((brand) => (
+            <label key={brand} className="flex items-center group cursor-pointer">
+              <input
+                value={brand}
+                onChange={handleFilterchange}
+                checked={filters.brand.includes(brand)}
+                type="checkbox"
+                name="brand"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <span className="ml-3 text-sm text-gray-700 group-hover:text-gray-900">
+                {brand}
+              </span>
+            </label>
+          ))}
+        </FilterSection>
+
+        {/* Price Range Filter */}
+        <FilterSection 
+          title="Price Range" 
+          isExpanded={expandedSections.price}
+          onToggle={() => toggleSection('price')}
+        >
+          <div className="space-y-3">
             <input
-              value={material}
-              onChange={handleFilterchange}
-              checked={filters.material.includes(material)}
-              type="checkbox" name='size' className='mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400
-            border-gray-300' />
-            <span className='text-gray-700'>{material}</span>
+              type="range"
+              name="priceRange"
+              min={0}
+              max={100}
+              value={priceRange[1]}
+              onChange={handlePriceChange}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+            />
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-600">₹0</span>
+              <div className="px-3 py-1 bg-blue-50 rounded-md">
+                <span className="text-sm font-medium text-blue-700">₹{priceRange[1]}</span>
+              </div>
+            </div>
           </div>
-        ))}
+        </FilterSection>
       </div>
 
-      {/* Brand filter */}
-      <div className='mb-6'>
-        <label className='block text-gray-600 font-medium mb-2'>Brand</label>
-        {brands.map((brand) => (
-          <div key={brand} className='flex items-center mb-1'>
-            <input
-              value={brand}
-              onChange={handleFilterchange}
-              checked={filters.material.includes(brand)}
-              type="checkbox" name='brand' className='mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400
-            border-gray-300' />
-            <span className='text-gray-700'>{brand}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Price Range Filter */}
-      <div className='mb-8'>
-        <label className='block text-gray-600 font-medium mb-2'>
-          Price Range
-        </label>
-        <input
-          type="range"
-          name='priceRange' min={0} max={100}
-          value={priceRange[1]}
-          onChange={handlePriceChange}
-
-          className='w-full h-2
-       bg-gray-300 rounded-lg appearance-none cursor-pointer'/>
-        <div className='flex justify-between text-gray-600 mt-2'>
-          <span>Rs0</span>
-          <span>${priceRange[1]}</span>
-        </div>
-      </div>
-
-
+      <style jsx>{`
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #3b82f6;
+          cursor: pointer;
+          border: 2px solid #ffffff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slider::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #3b82f6;
+          cursor: pointer;
+          border: 2px solid #ffffff;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+      `}</style>
     </div>
   )
 }
