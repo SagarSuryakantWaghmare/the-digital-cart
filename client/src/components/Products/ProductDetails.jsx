@@ -140,6 +140,7 @@ const ProductDetails = ({ productId }) => {
                                     key={index}
                                     src={image.url}
                                     alt={image.altText || `Thumbnail ${index}`}
+                                    loading="lazy"
                                     className={`w-20 h-20 object-cover rounded-lg cursor-pointer  border ${mainImage === image.url ? 'border-black' : 'border-white'}`}
                                     onClick={() => setMainImage(image.url)}
                                 />
@@ -149,6 +150,7 @@ const ProductDetails = ({ productId }) => {
                             <div className="mb-4">
                                 {mainImage ? (
                                     <img src={mainImage} alt="Main Product"
+                                        loading="lazy"
                                         className='w-full h-auto object-cover rounded-lg'
                                     />
                                 ) : (
@@ -163,6 +165,7 @@ const ProductDetails = ({ productId }) => {
                                         key={index}
                                         src={image.url}
                                         alt={image.altText || `Thumbnail ${index}`}
+                                        loading="lazy"
                                         className={`w-20 h-20 object-cover rounded-lg cursor-pointer  border ${mainImage === image.url ? 'border-black' : 'border-white'}`}
                                         onClick={() => setMainImage(image.url)}
                                     />

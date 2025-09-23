@@ -191,7 +191,7 @@ const Checkout = () => {
                         return (
                             <div key={index} className='flex items-start justify-between py-2 border-b'>
                                 <div className='flex items-start'>
-                                    <img src={imgSrc} alt={product.name || 'Product image'} className='w-20 h-20 object-cover mr-4 rounded' />
+                                    <img src={imgSrc} alt={product.name || 'Product image'} loading="lazy" className='w-20 h-20 object-cover mr-4 rounded' />
                                     <div>
                                         <h3 className='text-md'>{product.name}</h3>
                                         {product.size && <p className='text-gray-500'>Size: {product.size}</p>}
