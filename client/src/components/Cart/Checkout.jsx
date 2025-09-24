@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import PayPalButton from './PayPalButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCheckout } from '../../redux/slice/checkoutSlice';
+import { clearCart } from '../../redux/slice/cartSlice';
 import { ArrowLeft, User, MapPin, Phone, Mail, CreditCard, Shield, Truck } from 'lucide-react';
+import { toast } from 'sonner';
 import axios from 'axios';
 
 const Checkout = () => {
@@ -12,6 +13,7 @@ const Checkout = () => {
     const { cart, loading, error } = useSelector((state) => state.cart);
     const { user } = useSelector((state) => state.auth);
     const [CheckoutId, setCheckoutId] = useState(null);
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
     const [shippingAddress, setShippingAddress] = useState({
         firstName: "",
         lastName: "",
@@ -35,7 +37,7 @@ const Checkout = () => {
                 createCheckout({
                     checkoutItems: cart.products,
                     shippingAddress,
-                    paymentMethod: "Paypal",
+                    paymentMethod: "Direct Payment",
                     totalPrice: cart.totalPrice,
                 })
             );
@@ -45,27 +47,54 @@ const Checkout = () => {
         }
     }
 
-    const handlePaymentSuccess = async (details) => {
+    const handleDirectPayment = async () => {
+        if (!CheckoutId) {
+            toast.error("Please fill in shipping details first");
+            return;
+        }
+
+        console.log("Starting payment process for checkout ID:", CheckoutId);
+        setIsProcessingPayment(true);
+        
         try {
+            // Mark payment as paid
+            const paymentDetails = {
+                transactionId: 'TXN' + Date.now(),
+                paymentMethod: 'Direct Payment',
+                timestamp: new Date().toISOString()
+            };
+
+            console.log("Sending payment request with details:", paymentDetails);
+
             const response = await axios.put(
                 `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/pay`,
-                { paymentStatus: "paid", paymentDetails: details },
+                { paymentStatus: "paid", paymentDetails },
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                     }
                 }
             );
-            console.log("Payment success response:", response.data);
+            
+            console.log("Payment success response:", response.status, response.data);
+            
+            // Finalize the checkout
             await handleFinalizeCheckout(CheckoutId);
-            //  Payment successful, navigation handled in finalizeCheckout
+            
+            // Show success toast
+            toast.success("Order placed successfully! 🎉");
+            
         } catch (error) {
             console.error("Payment error:", error);
+            console.error("Payment error response:", error.response?.data);
+            toast.error(error.response?.data?.message || "Payment failed. Please try again.");
+            setIsProcessingPayment(false);
         }
     };
 
     const handleFinalizeCheckout = async (CheckoutId) => {
         try {
+            console.log("Finalizing checkout with ID:", CheckoutId);
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/finalize`,
                 {},
                 {
@@ -74,13 +103,28 @@ const Checkout = () => {
                     }
                 }
             );
-            if (response.status === 200) {
-                navigate(`/order-confirmation?orderId=${CheckoutId}`);
+            
+            console.log("Finalize response:", response.status, response.data);
+            
+            if (response.status === 200 || response.status === 201) {
+                // Clear cart and redirect to profile page after successful payment
+                dispatch(clearCart());
+                setIsProcessingPayment(false);
+                
+                // Delay navigation slightly to show the success toast
+                setTimeout(() => {
+                    navigate('/profile');
+                }, 1500);
             } else {
-                console.error("Finalize checkout failed");
+                console.error("Finalize checkout failed with status:", response.status);
+                toast.error("Failed to complete order. Please try again.");
+                setIsProcessingPayment(false);
             }
         } catch (error) {
             console.error("Finalize checkout error:", error);
+            console.error("Error response:", error.response?.data);
+            toast.error(error.response?.data?.message || "Failed to complete order. Please try again.");
+            setIsProcessingPayment(false);
         }
     };
 
@@ -282,20 +326,33 @@ const Checkout = () => {
                                     </button>
                                 ) : (
                                     <div className='space-y-4'>
-                                        <div className='flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200'>
-                                            <div className='flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full'>
-                                                <CreditCard className='h-4 w-4 text-blue-600' />
+                                        <div className='flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200'>
+                                            <div className='flex items-center justify-center w-8 h-8 bg-green-100 rounded-full'>
+                                                <CreditCard className='h-4 w-4 text-green-600' />
                                             </div>
                                             <div>
-                                                <h4 className='font-medium text-blue-900'>Secure Payment with PayPal</h4>
-                                                <p className='text-sm text-blue-700'>Your payment information is encrypted and secure</p>
+                                                <h4 className='font-medium text-green-900'>Secure Direct Payment</h4>
+                                                <p className='text-sm text-green-700'>Pay directly with your credit or debit card</p>
                                             </div>
                                         </div>
-                                        <PayPalButton
-                                            amount={cart.totalPrice}
-                                            onSuccess={handlePaymentSuccess}
-                                            onError={(err) => alert("Payment failed", err)} 
-                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleDirectPayment}
+                                            disabled={isProcessingPayment}
+                                            className='w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2'
+                                        >
+                                            {isProcessingPayment ? (
+                                                <>
+                                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                                    <span>Processing...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <CreditCard className='h-5 w-5' />
+                                                    <span>Pay ₹{cart.totalPrice?.toLocaleString()}</span>
+                                                </>
+                                            )}
+                                        </button>
                                     </div>
                                 )}
                             </div>

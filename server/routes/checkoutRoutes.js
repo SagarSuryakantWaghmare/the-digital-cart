@@ -76,11 +76,24 @@ router.post("/:id/finalize",protect,async (req,res)=>{
             return res.status(404).json({message:"Checkout not found"});
         }
         if(checkout.isPaid &&!checkout.isFinalized){
+            console.log("Creating order with checkout data:", {
+                user: checkout.user,
+                orderItems: checkout.checkoutItems,
+                shippingAddress: checkout.shippingAddress,
+                paymentMethod: checkout.paymentMethod,
+                totalPrice: checkout.totalPrice
+            });
+
             // Create final order based on the checkout details
             const finalOrder=await Order.create({
                 user:checkout.user,
-                orderItems:checkout.orderItems,
-                shippingAddress:checkout.shippingAddress,
+                orderItems:checkout.checkoutItems,
+                shippingAddress:{
+                    address: checkout.shippingAddress.address || 'N/A',
+                    city: checkout.shippingAddress.city || 'N/A',
+                    postalCode: checkout.shippingAddress.postalCode || 'N/A',
+                    country: checkout.shippingAddress.country || 'N/A'
+                },
                 paymentMethod:checkout.paymentMethod,
                 totalPrice:checkout.totalPrice,
                 isPaid:true,
@@ -96,8 +109,9 @@ router.post("/:id/finalize",protect,async (req,res)=>{
             await checkout.save();
 
             // Delete the cart associated with the user
-            await Cart.findOneAndDelete({user:Checkout.user});
-            res.status(201).json(finalOrder);
+            await Cart.findOneAndDelete({user:checkout.user});
+            console.log("Order created successfully:", finalOrder._id);
+            res.status(200).json(finalOrder);
         }
         else if (checkout.isFinalized){
             res.status(400).json({message:"Checkout already finalized"});
@@ -106,9 +120,17 @@ router.post("/:id/finalize",protect,async (req,res)=>{
             res.status(400).json({message:"Checkout is not paid"});
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({message:"Server Error"});
-        
+        console.error("Finalize checkout error:", error);
+        console.error("Error details:", error.message);
+        if (error.name === 'ValidationError') {
+            console.error("Validation errors:", error.errors);
+            res.status(400).json({
+                message: "Validation Error", 
+                details: Object.values(error.errors).map(e => e.message)
+            });
+        } else {
+            res.status(500).json({message:"Server Error: " + error.message});
+        }
     }
 })
 

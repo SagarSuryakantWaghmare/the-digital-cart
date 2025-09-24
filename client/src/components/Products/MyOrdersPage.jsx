@@ -12,20 +12,10 @@ const MyOrdersPage = () => {
 
   useEffect(() => {
     // Fetch orders when component mounts
-    console.log('=== FETCHING ORDERS ON COMPONENT MOUNT ===');
     dispatch(fetchUserOrders());
   }, [dispatch]);
 
-  // Debug logging when orders change
-  useEffect(() => {
-    if (orders) {
-      console.log('Orders updated:', orders);
-      console.log('Orders length:', orders.length);
-      if (orders.length > 0) {
-        console.log('Sample order structure:', orders[0]);
-      }
-    }
-  }, [orders]);
+
 
   const handleRowClick = (orderId) => {
     navigate(`/order/${orderId}`)
@@ -99,7 +89,9 @@ const MyOrdersPage = () => {
                     onClick={() => handleRowClick(order._id)}
                     className='border-b hover:bg-gray-50 cursor-pointer'>
                     <td className='py-2 px-2 sm:py-4 sm:px-4'>
-                      <img src={imgSrc} alt={productName}
+                      <img 
+                        src={imgSrc} 
+                        alt={productName}
                         className='w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg'
                       />
                     </td>
