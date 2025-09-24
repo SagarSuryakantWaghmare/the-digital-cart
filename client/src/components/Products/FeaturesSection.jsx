@@ -6,7 +6,7 @@ const FeaturesSection = () => {
         {
             icon: ShoppingBag,
             title: "FREE WORLDWIDE SHIPPING",
-            description: "Enjoy complimentary shipping on all orders over $50 to select countries worldwide.",
+            description: "Enjoy complimentary shipping on all orders over ₹2000 to select countries worldwide.",
             color: "from-blue-500 to-cyan-500"
         },
         {

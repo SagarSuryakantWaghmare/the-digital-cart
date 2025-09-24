@@ -177,13 +177,16 @@ const ProductDetails = ({ productId }) => {
                             <h1 className='text-2xl md:text-3xl font-semibold mb-2'>
                                 {selectedProduct.name}
                             </h1>
-                            <p className='text-lg text-gray-600 mb-1 line-through'>
-                                {selectedProduct.originalPrice &&
-                                    `${selectedProduct.originalPrice}`}
-                            </p>
-                            <p className="text-xl text-gray-500 mb-2">
-                                ${selectedProduct.price}
-                            </p>
+                            <div className="flex items-center space-x-3 mb-2">
+                                <p className="text-2xl font-bold text-gray-900">
+                                    ₹{selectedProduct.discountPrice || selectedProduct.price}
+                                </p>
+                                {selectedProduct.discountPrice && selectedProduct.discountPrice !== selectedProduct.price && (
+                                    <p className='text-lg text-gray-500 line-through'>
+                                        ₹{selectedProduct.price}
+                                    </p>
+                                )}
+                            </div>
                             <p className='text-gray-600 mb-4'>
                                 {selectedProduct.description}
                             </p>

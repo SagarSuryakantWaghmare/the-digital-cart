@@ -13,10 +13,10 @@ const FilterSidebar = () => {
     material: [],
     brand: [],
     minPrice: 0,
-    maxPrice: 100,
+    maxPrice: 10000,
   })
 
-  const [priceRange, setPriceRange] = useState([0, 100]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [expandedSections, setExpandedSections] = useState({
     category: true,
     gender: true,
@@ -27,7 +27,7 @@ const FilterSidebar = () => {
     price: true
   });
 
-  const categories = ["Top Wear", "Bottom Wear"];
+  const categories = ["Top Wear", "Bottom Wear", "Dresses", "Sets"];
 
   const colors = [
     { name: "Red", value: "red", hex: "#ef4444" },
@@ -57,14 +57,42 @@ const FilterSidebar = () => {
 
   const brands = [
     "Urban Threads",
-    "Modern Fit",
+    "Modern Fit", 
     "Street Style",
     "Beach Breeze",
     "Fashionista",
     "ChicStyle",
+    "WinterWear",
+    "ElegantStyle",
+    "DenimCo",
+    "ActiveFit",
+    "ClassicLook",
+    "SummerVibes",
+    "RockStyle",
+    "StripeStyle",
+    "FlowFashion",
+    "RetroVibes",
+    "OutdoorLite",
+    "LinenLux",
+    "OfficePro",
+    "CozyComfort",
+    "FitPro",
+    "VintageModern",
+    "NightOut",
+    "ClassicPolo",
+    "StreetFit",
+    "FeminineFlair",
+    "TimelessStyle",
+    "ModernGrace",
+    "ProFit",
+    "ZenStyle",
+    "ClassicKnits",
+    "ModernFemme",
+    "GymFit",
+    "SimpleElegance"
   ];
 
-  const genders = ["Men", "Women"];
+  const genders = ["Men", "Women", "Unisex"];
 
   useEffect(() => {
     const params = Object.fromEntries([...searchParams]);
@@ -76,9 +104,9 @@ const FilterSidebar = () => {
       material: params.material ? params.material.split(",") : [],
       brand: params.brand ? params.brand.split(",") : [],
       minPrice: params.minPrice || 0,
-      maxPrice: params.maxPrice || 100
+      maxPrice: params.maxPrice || 10000
     });
-    setPriceRange([0, params.maxPrice || 100]);
+    setPriceRange([0, params.maxPrice || 10000]);
   }, [searchParams]);
 
   const toggleSection = (section) => {
@@ -140,10 +168,10 @@ const FilterSidebar = () => {
       material: [],
       brand: [],
       minPrice: 0,
-      maxPrice: 100,
+      maxPrice: 10000,
     };
     setFilters(clearedFilters);
-    setPriceRange([0, 100]);
+    setPriceRange([0, 10000]);
     setSearchParams({});
     navigate('/collections/all');
   }
@@ -156,7 +184,7 @@ const FilterSidebar = () => {
     count += filters.size.length;
     count += filters.material.length;
     count += filters.brand.length;
-    if (filters.maxPrice < 100) count++;
+    if (filters.maxPrice < 10000) count++;
     return count;
   }
 
@@ -361,7 +389,8 @@ const FilterSidebar = () => {
               type="range"
               name="priceRange"
               min={0}
-              max={100}
+              max={10000}
+              step={100}
               value={priceRange[1]}
               onChange={handlePriceChange}
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
@@ -369,7 +398,7 @@ const FilterSidebar = () => {
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">₹0</span>
               <div className="px-3 py-1 bg-blue-50 rounded-md">
-                <span className="text-sm font-medium text-blue-700">₹{priceRange[1]}</span>
+                <span className="text-sm font-medium text-blue-700">₹{priceRange[1].toLocaleString()}</span>
               </div>
             </div>
           </div>

@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Package, Edit, Trash2 } from 'lucide-react'
 import { deleteProduct, fetchAdminProducts } from '../../redux/slice/adminProductSlice';
+import LoadingSpinner from '../Common/LoadingSpinner';
 const ProductMangement = () => {
     const dispatch = useDispatch();
     const { products, loading, error } = useSelector(
@@ -17,51 +19,100 @@ const ProductMangement = () => {
             dispatch(deleteProduct(id));
         }
     }
-    if(loading) return<p>Loading...</p>
-    if(error) return<p>Error:{error}</p>
+    if(loading) return <LoadingSpinner size="lg" text="Loading products..." />
+    if(error) return (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+            <p className="font-medium">Error loading products</p>
+            <p className="text-sm">{error}</p>
+        </div>
+    )
     return (
-        <div className='max-w-7xl mx-auto p-6'>
-            <h2 className='text-2xl font-bold mb-6'>Product Mangement</h2>
-            <div className='overflow-x-auto shadow-md sm:rounded-lg'>
-                <table className='min-w-full text-left text-gray-500'>
-                    <thead className='bg-gray-100 text-xs uppercase text-gray-700'>
-                        <tr>
-                            <th className='py-3 px-4'>Name</th>
-                            <th className='py-3 px-4'>Price</th>
-                            <th className='py-3 px-4'>SKU</th>
-                            <th className='py-3 px-4'>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {products.length > 0 ? products.map((product) => (
-                            <tr key={product._id}
-                                className='border-b hover:bg-gray-50 cursor-pointer'
-                            >
-                                <td className='p-4 font-medium text-gray-900 whitespace-nowrap'>
-                                    {product.name}
-                                </td>
-                                <td className='p-4'>${product.price}</td>
-                                <td className='p-4'>${product.sku}</td>
-                                <td className='p-4'>
-                                    <Link to={`/admin/products/${product._id}/edit`}
-                                        className='bg-yellow-500 text-white px-2 py-1 rounded mr-2 hover:bg-yellow-700'>
-                                        Edit
-                                    </Link>
-                                    <button
-                                        className='bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600'
-                                        onClick={() => handleDelete(product._id)}>Delete</button>
-                                </td>
-                            </tr>
-                        )) : (
-                            <tr>
-                                <td colSpan={4} className='p-4 text-center text-gray-500'>
-                                    No Products Found.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+        <div className='space-y-6'>
+            {/* Clean Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 space-y-4 sm:space-y-0">
+                <div>
+                    <h2 className='text-2xl sm:text-3xl font-bold text-gray-900 flex items-center'>
+                        <div className="p-2 sm:p-3 bg-orange-600 rounded-lg mr-3 sm:mr-4">
+                            <Package className="text-white w-5 h-5 sm:w-6 sm:h-6" />
+                        </div>
+                        <span className="hidden sm:inline">Product Catalog Management</span>
+                        <span className="sm:hidden">Products</span>
+                    </h2>
+                    <p className="text-gray-600 mt-2 text-sm sm:text-base">Manage your entire product inventory and pricing</p>
+                </div>
+                <div className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md">
+                    <span className="font-bold text-lg">{products.length}</span>
+                    <p className="text-xs sm:text-sm opacity-90">Total Products</p>
+                </div>
+            </div>
 
+            {/* Products Grid */}
+            <div className='space-y-4'>
+                {products.length > 0 ? products.map((product) => (
+                    <div key={product._id} className='bg-white border border-gray-200 rounded-lg p-4 sm:p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300'>
+                        <div className="flex flex-col space-y-4">
+                            {/* Product Info */}
+                            <div className="flex items-center space-x-3 sm:space-x-4">
+                                {/* Product Image */}
+                                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                                    {product.images && product.images.length > 0 ? (
+                                        <img 
+                                            src={product.images[0].url} 
+                                            alt={product.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextSibling.style.display = 'flex';
+                                            }}
+                                        />
+                                    ) : null}
+                                    <div className={`w-full h-full bg-blue-600 rounded-lg flex items-center justify-center ${product.images && product.images.length > 0 ? 'hidden' : ''}`}>
+                                        <Package className="text-white w-4 h-4 sm:w-6 sm:h-6" />
+                                    </div>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className='font-bold text-gray-900 text-base sm:text-lg mb-1 truncate'>
+                                        {product.name}
+                                    </h3>
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-xs sm:text-sm text-gray-600">
+                                        <span className="bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded-full font-medium w-fit">
+                                            ₹{product.price}
+                                        </span>
+                                        <span className="bg-blue-100 text-blue-800 px-2 sm:px-3 py-1 rounded-full font-medium w-fit">
+                                            SKU: {product.sku}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                                <Link 
+                                    to={`/admin/products/${product._id}/edit`}
+                                    className='bg-yellow-500 hover:bg-yellow-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base'
+                                >
+                                    <Edit className="w-4 h-4" />
+                                    <span>Edit</span>
+                                </Link>
+                                <button
+                                    className='bg-red-500 hover:bg-red-600 text-white px-4 sm:px-6 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2 text-sm sm:text-base'
+                                    onClick={() => handleDelete(product._id)}
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )) : (
+                    <div className='bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-12 text-center'>
+                        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <Package className="text-gray-400 w-8 h-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-700 mb-2">No Products Available</h3>
+                        <p className="text-gray-500">Start building your product catalog by adding your first product.</p>
+                    </div>
+                )}
             </div>
         </div>
     )

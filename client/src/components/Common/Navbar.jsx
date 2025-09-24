@@ -29,13 +29,15 @@ const Navbar = () => {
                     <div className='flex items-center justify-between h-16'>
                         {/* Logo */}
                         <div className='flex items-center'>
-                            <Link to="/" className='flex items-center space-x-2 text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors duration-200'>
-                                <img 
-                                    src={cartGif} 
-                                    alt="Shopping Cart" 
-                                    className='w-8 h-8 hidden sm:block'
-                                    loading="eager"
-                                />
+                            <Link to="/" className='flex items-center space-x-3 text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors duration-200 group'>
+                                <div className="bg-gray-100 rounded-lg p-2 hidden sm:block group-hover:bg-gray-200 transition-colors duration-200">
+                                    <img 
+                                        src={cartGif} 
+                                        alt="Shopping Cart" 
+                                        className='w-6 h-6'
+                                        loading="eager"
+                                    />
+                                </div>
                                 <span>The Digital Cart</span>
                             </Link>
                         </div>

@@ -41,7 +41,7 @@ const OrderConfirmationPage = () => {
         };
 
         fetchOrder();
-    }, [orderId]);
+    }, [orderId, navigate]);
 
     const calculateEstimatedDelivery = (createdAt) => {
         const orderDate = new Date(createdAt);
