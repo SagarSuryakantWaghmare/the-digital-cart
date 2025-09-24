@@ -31,31 +31,32 @@ const AdminHomePage = () => {
 
 
                 <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                    <div className='p-4 shadow-md rounded-lg'>
-                        <h2 className='text-xl font-semibold'>Revenue</h2>
-                        <p className='text-2xl'>
-                            ${totalSales.toFixed(2)}
+                    <div className='p-6 shadow-md rounded-lg bg-gradient-to-r from-green-50 to-green-100 border border-green-200 hover:shadow-lg transition-shadow duration-200'>
+                        <h2 className='text-xl font-semibold text-green-800'>Revenue</h2>
+                        <p className='text-3xl font-bold text-green-900'>
+                            ₹{totalSales.toFixed(2)}
                         </p>
                     </div>
-                    <div className='p-4 shadow-md rounded-lg'>
-                        <h2 className='text-xl font-semibold'>Total Orders</h2>
-                        <p className='text-2xl'>
-                            ${totalOrders}
+                    
+                    <Link to="/admin/orders" className='block p-6 shadow-md rounded-lg bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 hover:shadow-lg hover:scale-105 transition-all duration-200'>
+                        <h2 className='text-xl font-semibold text-blue-800'>Total Orders</h2>
+                        <p className='text-3xl font-bold text-blue-900'>
+                            {totalOrders}
                         </p>
-                        <Link to="/admin/orders" className='text-blue-500 hover:underline'>
-                            Manage Orders
-                        </Link>
-                    </div>
+                        <p className='text-blue-600 hover:text-blue-800 mt-2 text-sm font-medium'>
+                            Click to manage orders →
+                        </p>
+                    </Link>
 
-                    <div className='p-4 shadow-md rounded-lg'>
-                        <h2 className='text-xl font-semibold'>Total Products</h2>
-                        <p className='text-2xl'>
+                    <Link to="/admin/products" className='block p-6 shadow-md rounded-lg bg-gradient-to-r from-purple-50 to-purple-100 border border-purple-200 hover:shadow-lg hover:scale-105 transition-all duration-200'>
+                        <h2 className='text-xl font-semibold text-purple-800'>Total Products</h2>
+                        <p className='text-3xl font-bold text-purple-900'>
                             {products.length}
                         </p>
-                        <Link to="/admin/Products" className='text-blue-500 hover:underline'>
-                            Manage Products
-                        </Link>
-                    </div>
+                        <p className='text-purple-600 hover:text-purple-800 mt-2 text-sm font-medium'>
+                            Click to manage products →
+                        </p>
+                    </Link>
                 </div>
             )}
 
@@ -77,7 +78,7 @@ const AdminHomePage = () => {
                                     <tr key={order._id} className='border-b hover:bg-gray-50 cursor-pointer'>
                                         <td className='p-4'>{order._id}</td>
                                         <td className='p-4'>{order.user.name}</td>
-                                        <td className='p-4'>{order.totalPrice.toFixed(2)}</td>
+                                        <td className='p-4'>₹{order.totalPrice.toFixed(2)}</td>
                                         <td className='p-4'>{order.status}</td>
                                     </tr>
                                 ))

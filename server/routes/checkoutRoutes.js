@@ -27,10 +27,8 @@ router.post("/",protect,async(req,res)=>{
             paymentStatus:"Peding",
             isPaid:false,
         });
-        console.log(`Checkout created for user: ${req.user._id}`);
         res.status(201).json(newCheckout);
     } catch (error) {
-        console.log(`Error creating checkout sessiong`,error);
         res.status(500).json({message:"Server Error"});
     }
 });
@@ -59,9 +57,7 @@ router.put("/:id/pay",protect,async(req,res)=>{
             res.status(400).json({message:"Invalid payment status"});
         }
     } catch (error) {
-        console.error(error);
         res.status(500).json({message:"Server Error"});
-        
     }
 })
 
@@ -76,14 +72,6 @@ router.post("/:id/finalize",protect,async (req,res)=>{
             return res.status(404).json({message:"Checkout not found"});
         }
         if(checkout.isPaid &&!checkout.isFinalized){
-            console.log("Creating order with checkout data:", {
-                user: checkout.user,
-                orderItems: checkout.checkoutItems,
-                shippingAddress: checkout.shippingAddress,
-                paymentMethod: checkout.paymentMethod,
-                totalPrice: checkout.totalPrice
-            });
-
             // Create final order based on the checkout details
             const finalOrder=await Order.create({
                 user:checkout.user,
@@ -110,7 +98,6 @@ router.post("/:id/finalize",protect,async (req,res)=>{
 
             // Delete the cart associated with the user
             await Cart.findOneAndDelete({user:checkout.user});
-            console.log("Order created successfully:", finalOrder._id);
             res.status(200).json(finalOrder);
         }
         else if (checkout.isFinalized){
@@ -120,10 +107,7 @@ router.post("/:id/finalize",protect,async (req,res)=>{
             res.status(400).json({message:"Checkout is not paid"});
         }
     } catch (error) {
-        console.error("Finalize checkout error:", error);
-        console.error("Error details:", error.message);
         if (error.name === 'ValidationError') {
-            console.error("Validation errors:", error.errors);
             res.status(400).json({
                 message: "Validation Error", 
                 details: Object.values(error.errors).map(e => e.message)

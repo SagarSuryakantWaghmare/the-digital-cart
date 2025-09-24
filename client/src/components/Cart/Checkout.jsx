@@ -53,7 +53,6 @@ const Checkout = () => {
             return;
         }
 
-        console.log("Starting payment process for checkout ID:", CheckoutId);
         setIsProcessingPayment(true);
         
         try {
@@ -63,8 +62,6 @@ const Checkout = () => {
                 paymentMethod: 'Direct Payment',
                 timestamp: new Date().toISOString()
             };
-
-            console.log("Sending payment request with details:", paymentDetails);
 
             const response = await axios.put(
                 `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/pay`,
@@ -85,8 +82,6 @@ const Checkout = () => {
             toast.success("Order placed successfully! 🎉");
             
         } catch (error) {
-            console.error("Payment error:", error);
-            console.error("Payment error response:", error.response?.data);
             toast.error(error.response?.data?.message || "Payment failed. Please try again.");
             setIsProcessingPayment(false);
         }
@@ -94,7 +89,6 @@ const Checkout = () => {
 
     const handleFinalizeCheckout = async (CheckoutId) => {
         try {
-            console.log("Finalizing checkout with ID:", CheckoutId);
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${CheckoutId}/finalize`,
                 {},
                 {
@@ -103,8 +97,6 @@ const Checkout = () => {
                     }
                 }
             );
-            
-            console.log("Finalize response:", response.status, response.data);
             
             if (response.status === 200 || response.status === 201) {
                 // Clear cart and redirect to profile page after successful payment
@@ -116,13 +108,10 @@ const Checkout = () => {
                     navigate('/profile');
                 }, 1500);
             } else {
-                console.error("Finalize checkout failed with status:", response.status);
                 toast.error("Failed to complete order. Please try again.");
                 setIsProcessingPayment(false);
             }
         } catch (error) {
-            console.error("Finalize checkout error:", error);
-            console.error("Error response:", error.response?.data);
             toast.error(error.response?.data?.message || "Failed to complete order. Please try again.");
             setIsProcessingPayment(false);
         }

@@ -57,21 +57,16 @@ const EditProductPage = () => {
             return;
         }
         
-        console.log("Uploading file:", file.name, file.size, file.type);
-        
         const formData = new FormData();
         formData.append("image", file);
         
         try {
             setUploading(true);
-            console.log("Making upload request to:", `${import.meta.env.VITE_BACKEND_URL}/api/upload`);
             
             const { data } = await axios.post(
                 `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
                 formData
             );
-            
-            console.log("Upload response:", data);
             
             setProductData((prevData) => ({
                 ...prevData,
