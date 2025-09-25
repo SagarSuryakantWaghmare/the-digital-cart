@@ -166,17 +166,12 @@ npm run dev
 |----------|-------------|----------|---------|
 | `MONGO_URI` | MongoDB connection string | ✅ | - |
 | `JWT_SECRET` | JWT signing secret | ✅ | - |
-| `PORT` | Server port | ❌ | 5000 |
-| `NODE_ENV` | Environment mode | ❌ | development |
-| `ADMIN_EMAIL` | Default admin email | ❌ | admin@digitalcart.com |
-| `ADMIN_PASSWORD` | Default admin password | ❌ | admin123 |
 
 ### Client (.env)
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
 | `VITE_BACKEND_URL` | Backend API URL | ✅ | - |
-| `VITE_APP_NAME` | Application name | ❌ | The Digital Cart |
-| `VITE_NODE_ENV` | Environment mode | ❌ | development |
+
 
 ## 📁 Project Structure
 
