@@ -69,12 +69,6 @@ const Footer = () => {
             <h3 className='text-lg font-semibold mb-4 text-white'>Support</h3>
             <ul className='space-y-3'>
               <li>
-                <Link to="/contact" 
-                  className='text-gray-300 hover:text-white transition-colors duration-200 text-sm'>
-                  Contact Us
-                </Link>
-              </li>
-              <li>
                 <Link to="/about" 
                   className='text-gray-300 hover:text-white transition-colors duration-200 text-sm'>
                   About Us

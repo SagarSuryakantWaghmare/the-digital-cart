@@ -20,6 +20,16 @@ import ProductMangement from './components/Admin/ProductMangement'
 import EditProductPage from './components/Admin/EditProductPage'
 import OrderMangement from './components/Admin/OrderMangement'
 
+// Footer Pages
+import Contact from './pages/Contact'
+import About from './pages/About'
+import FAQ from './pages/FAQ'
+import Shipping from './pages/Shipping'
+import Returns from './pages/Returns'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
+import Cookies from './pages/Cookies'
+
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import ProtectedRoute from './components/Common/ProtectedRoute'
@@ -43,6 +53,16 @@ const App = () => {
             <Route path='order-confirmation' element={<OrderConfirmationPage />} />
             <Route path='order/:id' element={<OrderDetailsPage />} />
             <Route path='my-orders' element={<MyOrdersPage />} />
+            
+            {/* Footer Pages */}
+            <Route path='contact' element={<Contact />} />
+            <Route path='about' element={<About />} />
+            <Route path='faq' element={<FAQ />} />
+            <Route path='shipping' element={<Shipping />} />
+            <Route path='returns' element={<Returns />} />
+            <Route path='privacy' element={<Privacy />} />
+            <Route path='terms' element={<Terms />} />
+            <Route path='cookies' element={<Cookies />} />
           </Route>
           <Route path="/admin" element={
             <ProtectedRoute role="admin">
